@@ -9,5 +9,8 @@ wheels/
 # Virtual environments
 .venv
 
-# Secrets
+# File extensions
 .env
+
+# Other
+data/

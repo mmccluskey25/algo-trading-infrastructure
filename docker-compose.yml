@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  redis:
+    image: "redis:latest"
+    container_name: "ep_redis"
+    ports:
+      - "6379:6379"
+    volumes:
+      - /mnt/user/appdata/ep_bot/redis:/data
+    command: >
+      redis-server
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+      --appendonly yes
+      --protected-mode no
+
+networks:
+  trading_net:
+    driver: bridge
+      

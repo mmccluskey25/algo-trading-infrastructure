@@ -15,7 +15,7 @@ services:
       --appendonly yes
       --protected-mode no
     networks:
-      -trading_net
+      - trading_net
     restart: unless-stopped
   
   # Microservices

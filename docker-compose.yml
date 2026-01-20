@@ -7,13 +7,45 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - /mnt/user/appdata/ep_bot/redis:/data
+      - ${HOST_REDIS_PATH}:/data
     command: >
       redis-server
       --maxmemory 512mb
       --maxmemory-policy allkeys-lru
       --appendonly yes
       --protected-mode no
+    networks:
+      -trading_net
+    restart: unless-stopped
+  
+  # Microservices
+  oanda_listener:
+    container_name: "ep_oanda_listener"
+    build:
+      context: .
+      dockerfile: services/oanda_listener/Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - redis
+    networks:
+      - trading_net
+
+  ingestor:
+    container_name: "ep_bronze_ingest"
+    build:
+      context: .
+      dockerfile: services/ingestor/Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - DATA_DIR=/data/bronze
+    volumes:
+      - ${HOST_DATA_PATH}:/data
+    depends_on:
+      - redis
+    networks:
+      - trading_net
 
 networks:
   trading_net:

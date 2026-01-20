@@ -1,19 +1,11 @@
 [project]
-name = "emergent-profit"
+name = "ingestor"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "aiohttp>=3.13.3",
-    "asyncio>=4.0.0",
     "polars>=1.37.1",
     "python-dotenv>=1.2.1",
     "redis>=7.1.0",
-]
-
-[tool.uv.workspace]
-members = [
-    "services/ingestor",
-    "services/oanda_listener",
 ]

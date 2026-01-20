@@ -38,11 +38,11 @@ services:
       - INSTRUMENTS=${INSTRUMENTS}
       #- OANDA_ENV=${OANDA_ENV}
 
-  ingestor:
-    container_name: "ep_bronze_ingest"
+  stream_writer:
+    container_name: "ep_stream_writer"
     build:
       context: .
-      dockerfile: services/ingestor/Dockerfile
+      dockerfile: services/stream_writer/Dockerfile
     restart: unless-stopped
     volumes:
       - ${HOST_DATA_PATH}:/data
@@ -52,7 +52,7 @@ services:
       - trading_net
     environment:
       - PYTHONUNBUFFERED=1
-      - DATA_DIR=/data/bronze
+      - DATA_DIR=/data/landing
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
 

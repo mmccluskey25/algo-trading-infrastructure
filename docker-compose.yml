@@ -25,7 +25,6 @@ services:
       context: .
       dockerfile: services/oanda_listener/Dockerfile
     restart: unless-stopped
-    env_file: .env
     depends_on:
       - redis
     networks:
@@ -37,7 +36,6 @@ services:
       context: .
       dockerfile: services/ingestor/Dockerfile
     restart: unless-stopped
-    env_file: .env
     environment:
       - DATA_DIR=/data/bronze
     volumes:

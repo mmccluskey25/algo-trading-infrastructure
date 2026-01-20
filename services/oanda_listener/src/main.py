@@ -12,9 +12,11 @@ API_TOKEN = os.getenv("API_TOKEN")
 INSTRUMENTS= os.getenv("INSTRUMENTS")
 URL = f"https://stream-fxtrade.oanda.com/v3/accounts/{ACCOUNT_ID}/pricing/stream?instruments={INSTRUMENTS}"
 
+print(URL)
+
 async def oanda_ingest():
     
-    print("Attempting connection to Redis at {REDIS_HOST}...")
+    print(f"Attempting connection to Redis at {REDIS_HOST}...")
     try:
         r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
         await r.ping()

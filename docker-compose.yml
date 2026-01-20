@@ -29,6 +29,14 @@ services:
       - redis
     networks:
       - trading_net
+    environment:
+      - PYTHONUNBUFFERED=1
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - ACCOUNT_ID=${ACCOUNT_ID}
+      - API_TOKEN=${API_TOKEN}
+      - INSTRUMENTS=${INSTRUMENTS}
+      #- OANDA_ENV=${OANDA_ENV}
 
   ingestor:
     container_name: "ep_bronze_ingest"
@@ -36,14 +44,17 @@ services:
       context: .
       dockerfile: services/ingestor/Dockerfile
     restart: unless-stopped
-    environment:
-      - DATA_DIR=/data/bronze
     volumes:
       - ${HOST_DATA_PATH}:/data
     depends_on:
       - redis
     networks:
       - trading_net
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATA_DIR=/data/bronze
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
 
 networks:
   trading_net:

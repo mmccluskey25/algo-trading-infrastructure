@@ -1,8 +1,13 @@
 import os, glob, datetime
 import polars as pl
+from dotenv import load_dotenv, find_dotenv
 
-LANDING_DIR = "/data/landing"
-BRONZE_DIR = "/data/bronze"
+load_dotenv(find_dotenv())
+
+
+DATA_DIR = os.getenv("DATA_DIR", "./data")
+LANDING_DIR = os.getenv("LANDING_DIR", "/data/landing")
+BRONZE_DIR = os.getenv("BRONZE_DIR", "/data/bronze")
 
 def compact_files(date):
     date_str = date.strftime("%Y%m%d")
@@ -21,3 +26,9 @@ def compact_files(date):
     
     for f in files:
         os.remove(f)
+
+
+# adapt code to be containerised
+# fix env variables
+# add "dry run" capability
+# create dockerfile

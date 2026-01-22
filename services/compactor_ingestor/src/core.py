@@ -4,7 +4,7 @@ import polars as pl
 
 def compact_files(landing_dir: str, bronze_dir: str, date_str: str, delete_raw: bool = False):
     print(f'Looking for files in {landing_dir}...')
-    files = glob.glob(f"{landing_dir}/{date_str}_*.parquet")
+    files = glob.glob(f"{landing_dir}/*_{date_str}_*.parquet")
     
     if not files: 
         print("No files found. Exiting.")

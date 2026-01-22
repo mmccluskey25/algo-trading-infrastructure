@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY services/compactor_ingestor/src/ ./src/
 
-#CMD ["python", "src/main.py"]
+CMD ["tail", "-f", "/dev/null"]

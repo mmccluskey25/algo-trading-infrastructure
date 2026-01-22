@@ -3,12 +3,14 @@ import polars as pl
 
 
 def compact_files(landing_dir: str, bronze_dir: str, date_str: str, delete_raw: bool = False):
-
+    print(f'Looking for files in {landing_dir}...')
     files = glob.glob(f"{landing_dir}/{date_str}_*.parquet")
-
+    
     if not files: 
+        print("No files found. Exiting.")
         return
     
+    print(f"Found {len(files)} files.")
     df = pl.scan_parquet(files).sort("time").collect()
 
     output_path = f"{bronze_dir}/{date_str}.parquet"

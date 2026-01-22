@@ -10,7 +10,7 @@ REDIS_HOST = os.getenv("REDIS_HOST", "redis")
 REDIS_PORT = os.getenv("REDIS_PORT", 6379)
 QUEUE_KEY = "tick_queue:oanda"
 
-OUTPUT_DIR = os.getenv("DATA_DIR", "./data/landing/ticks")
+OUTPUT_DIR = os.getenv("LANDING_DIR", "./data/landing/ticks")
 BATCH_INTERVAL = os.getenv("WRITER_BATCH_INTERVAL", 60)
 
 Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)

@@ -5,8 +5,8 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 DATA_DIR = os.getenv("DATA_DIR", "./data")
-LANDING_DIR = os.getenv("LANDING_DIR", "/data/landing")
-BRONZE_DIR = os.getenv("BRONZE_DIR", "/data/bronze")
+LANDING_DIR = os.getenv("LANDING_DIR", "/data/landing/ticks")
+BRONZE_DIR = os.getenv("BRONZE_DIR", "/data/bronze/ticks")
 
 DELETE_RAW = os.getenv("DELETE_RAW", "true").lower() == "true"
 INTERVAL = int(os.getenv("COMPACT_INTERVAL", 240)) # default 4 hours

@@ -9,7 +9,7 @@ def main():
     parser = argparse.ArgumentParser(description="Manual trigger")
     
     parser.add_argument("--delete", action="store_true", help="Delete raw data files after compaction")
-    parser.add_argument("--landing", default=os.getenv("LANDING_DIR", "/data/landing"))
+    parser.add_argument("--landing", default=os.getenv("LANDING_DIR", "/data/landing/ticks"))
     parser.add_argument("--bronze", default=os.getenv("BRONZE_DIR", "/data/bronze/ticks"))
     parser.add_argument("--date", default=datetime.now().strftime("%Y%m%d"))
 
@@ -26,4 +26,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    

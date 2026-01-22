@@ -52,9 +52,25 @@ services:
       - trading_net
     environment:
       - PYTHONUNBUFFERED=1
-      - DATA_DIR=/data/landing
+      - LANDING_DIR=/data/landing/ticks
       - REDIS_HOST=${REDIS_HOST}
       - REDIS_PORT=${REDIS_PORT}
+
+  compactor_ingestor:
+    container_name: "ep_compactor_ingestor"
+    build:
+      context: .
+      dockerfile: services/compactor_ingestor/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ${HOST_DATA_PATH}:/data
+    networks:
+      - trading_net
+    environment:
+      - LANDING_DIR=/data/landing/ticks
+      - BRONZE_DIR=/data/bronze/ticks
+      - PYTHONUNBUFFERED=1
+    
 
 networks:
   trading_net:

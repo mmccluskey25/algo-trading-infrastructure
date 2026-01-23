@@ -69,8 +69,22 @@ services:
     environment:
       - LANDING_DIR=/data/landing/ticks
       - BRONZE_DIR=/data/bronze/ticks
+      - DELETE_RAW=${DELETE_AFTER_COMPACTION}
+      - COMPACT_INTERVAL=${COMPACTION_INTERVAL_MINS}
       - PYTHONUNBUFFERED=1
     
+  transformer:
+    container_name: "${PREFIX}_transformer"
+    build:
+      context: .
+      dockerfile: services/transformer/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ${HOST_DATA_PATH}:/data
+    networks:
+      - trading_net
+    environment:
+      - PYTHONUNBUFFERED=1
 
 networks:
   trading_net:

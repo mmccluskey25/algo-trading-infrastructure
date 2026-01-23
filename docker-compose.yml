@@ -81,6 +81,8 @@ services:
       - ${HOST_DATA_PATH}:/data
     networks:
       - trading_net
+    environment:
+      - PYTHONUNBUFFERED=1
 
 networks:
   trading_net:

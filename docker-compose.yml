@@ -71,6 +71,16 @@ services:
       - BRONZE_DIR=/data/bronze/ticks
       - PYTHONUNBUFFERED=1
     
+  transformer:
+    container_name: "${PREFIX}_transformer"
+    build:
+      context: .
+      dockerfile: services/transformer/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ${HOST_DATA_PATH}:/data
+    networks:
+      - trading_net
 
 networks:
   trading_net:

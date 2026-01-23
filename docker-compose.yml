@@ -3,9 +3,9 @@ version: "3.8"
 services:
   redis:
     image: "redis:latest"
-    container_name: "ep_redis"
+    container_name: "${PREFIX}_redis"
     ports:
-      - "6379:6379"
+      - "${REDIS_EXT_PORT}:6379"
     volumes:
       - ${HOST_REDIS_PATH}:/data
     command: >
@@ -20,7 +20,7 @@ services:
   
   # Microservices
   oanda_listener:
-    container_name: "ep_oanda_listener"
+    container_name: "${PREFIX}_oanda_listener"
     build:
       context: .
       dockerfile: services/oanda_listener/Dockerfile
@@ -39,7 +39,7 @@ services:
       #- OANDA_ENV=${OANDA_ENV}
 
   stream_writer:
-    container_name: "ep_stream_writer"
+    container_name: "${PREFIX}_stream_writer"
     build:
       context: .
       dockerfile: services/stream_writer/Dockerfile
@@ -57,7 +57,7 @@ services:
       - REDIS_PORT=${REDIS_PORT}
 
   compactor_ingestor:
-    container_name: "ep_compactor_ingestor"
+    container_name: "${PREFIX}_compactor_ingestor"
     build:
       context: .
       dockerfile: services/compactor_ingestor/Dockerfile

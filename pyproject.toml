@@ -17,4 +17,5 @@ members = [
     "services/stream_writer",
     "services/oanda_listener",
     "services/compactor_ingestor",
+    "services/transformer",
 ]

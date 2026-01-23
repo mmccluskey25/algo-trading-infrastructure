@@ -18,8 +18,8 @@ It transitions the logic from a monolithic desktop application to a containerise
 - Silver to Gold Pipeline: Further resampling to higher timeframes, feature engineering and signals
 
 ### 3. Trading Engine (Planned)
-- **Execution Service:** A decoupled execution engine that consumes "Gold" layer signals for strategy logic while using the Redis live stream for precise, low-latency entry/exit timing. Implements the Oanda v20 REST API for order management and position tracking.
-- **Backtesting Framework:** A high-performance simulation engine built on Polars. It is designed to run strategies against historical data using vectorised execution for speed. Will use a shared strategy interface with the Execution Service to ensure zero logic drift between historical testing and live deployment.
+- **Execution Service:** A decoupled execution engine that consumes "Gold" layer signals for strategy logic while using the Redis live stream for precise, low-latency entry/exit timing. Implements the Oanda v20 REST API for order management and position tracking.
+- **Backtesting Framework:** A high-performance simulation engine built on Polars. It is designed to run strategies against historical data using vectorised execution for speed. Will use a shared strategy interface with the Execution Service to ensure zero logic drift between historical testing and live deployment.
 
 ## Tech stack
 - Python 3.13
@@ -42,7 +42,7 @@ Environment variables are handled via Portainer injection or a local `.env` file
 # Required Environment Variables
 REDIS_HOST=redis # redis container name
 REDIS_PORT=6379
-HOST_REDIS_PATH=/mnt/user/appdata/redis
+HOST_REDIS_PATH=/mnt/user/appdata/ep_bot/redis
 ACCOUNT_ID=xxx-xxx-xxx
 API_TOKEN=your_token
 INSTRUMENTS=EUR_USD,GBP_USD

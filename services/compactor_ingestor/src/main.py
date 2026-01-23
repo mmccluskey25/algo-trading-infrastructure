@@ -18,7 +18,7 @@ def main():
     while True:
         compact_files(LANDING_DIR, BRONZE_DIR, delete_raw=DELETE_RAW)
 
-        print("Sleeping for {INTERVAL} minutes...")
+        print(f"Sleeping for {INTERVAL} minutes...")
         time.sleep(INTERVAL * 60)
 
 

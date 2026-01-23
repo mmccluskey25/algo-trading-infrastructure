@@ -70,6 +70,8 @@ services:
       - LANDING_DIR=/data/landing/ticks
       - BRONZE_DIR=/data/bronze/ticks
       - PYTHONUNBUFFERED=1
+      - DELETE_RAW=${DELETE_AFTER_COMPACTION}
+      - COMPACT_INTERVAL=${COMPACTION_INTERVAL_MINS}
     
 
 networks:

@@ -3,8 +3,8 @@ import json
 import os
 
 import aiohttp
-import redis.asyncio as redis
 from dotenv import find_dotenv, load_dotenv
+from redis.asyncio import Redis
 
 load_dotenv(find_dotenv())
 
@@ -22,7 +22,7 @@ print(URL)
 async def oanda_ingest():
     print(f"Attempting connection to Redis at {REDIS_HOST}...")
     try:
-        r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+        r = Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
         await r.ping()
         print("Redis Connected.")
     except Exception as e:
@@ -63,7 +63,7 @@ async def oanda_ingest():
                         try:
                             data = json.loads(line_str)
                             if data.get("type") == "PRICE":
-                                await r.push("tick_queue:oanda", json.dumps(data))
+                                await r.rpush("tick_queue:oanda", json.dumps(data))
 
                         except json.JSONDecodeError:
                             pass

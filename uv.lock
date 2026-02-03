@@ -231,12 +231,14 @@ version = "0.1.0"
 source = { virtual = "services/compactor_ingestor" }
 dependencies = [
     { name = "polars" },
+    { name = "pydantic-settings" },
     { name = "python-dotenv" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "polars", specifier = ">=1.37.1" },
+    { name = "pydantic-settings", specifier = ">=2.12.0" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
 ]
 
@@ -811,6 +813,7 @@ version = "0.1.0"
 source = { virtual = "services/oanda_listener" }
 dependencies = [
     { name = "aiohttp" },
+    { name = "pydantic-settings" },
     { name = "python-dotenv" },
     { name = "redis" },
 ]
@@ -818,6 +821,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "aiohttp", specifier = ">=3.13.3" },
+    { name = "pydantic-settings", specifier = ">=2.12.0" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
     { name = "redis", specifier = ">=7.1.0" },
 ]
@@ -1279,6 +1283,7 @@ version = "0.1.0"
 source = { virtual = "services/stream_writer" }
 dependencies = [
     { name = "polars" },
+    { name = "pydantic-settings" },
     { name = "python-dotenv" },
     { name = "redis" },
 ]
@@ -1286,6 +1291,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "polars", specifier = ">=1.37.1" },
+    { name = "pydantic-settings", specifier = ">=2.12.0" },
     { name = "python-dotenv", specifier = ">=1.2.1" },
     { name = "redis", specifier = ">=7.1.0" },
 ]

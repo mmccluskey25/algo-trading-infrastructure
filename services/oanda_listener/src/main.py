@@ -1,35 +1,25 @@
 import asyncio
 import json
-import os
 
 import aiohttp
-from dotenv import find_dotenv, load_dotenv
 from redis.asyncio import Redis
+from services.shared.config import settings
 
-load_dotenv(find_dotenv())
-
-REDIS_HOST = os.getenv("REDIS_HOST", "redis")
-REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
-
-ACCOUNT_ID = os.getenv("ACCOUNT_ID")
-API_TOKEN = os.getenv("API_TOKEN")
-INSTRUMENTS = os.getenv("INSTRUMENTS")
-URL = f"https://stream-fxtrade.oanda.com/v3/accounts/{ACCOUNT_ID}/pricing/stream?instruments={INSTRUMENTS}"
-
+URL = f"https://stream-fxtrade.oanda.com/v3/accounts/{settings.account_id}/pricing/stream?instruments={settings.instruments}"
 print(URL)
 
 
 async def oanda_ingest():
-    print(f"Attempting connection to Redis at {REDIS_HOST}...")
+    print(f"Attempting connection to Redis at {settings.redis_host}...")
     try:
-        r = Redis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+        r = Redis(host=settings.redis_host, port=settings.redis_port, db=0)
         await r.ping()
         print("Redis Connected.")
     except Exception as e:
         print(f"Redis connection failed: {e}")
         return
 
-    headers = {"Authorization": f"Bearer {API_TOKEN}"}
+    headers = {"Authorization": f"Bearer {settings.api_token}"}
 
     timeout = aiohttp.ClientTimeout(total=None)
 

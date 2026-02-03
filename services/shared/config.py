@@ -25,7 +25,7 @@ class Settings(BaseSettings):
     # stream writer
     landing_dir: str = "./data/landing/ticks"
     writer_batch_interval: int = 60
-    queue_key = "tick_queue:oanda"
+    queue_key: str = "tick_queue:oanda"
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", case_sensitive=False, extra="ignore"

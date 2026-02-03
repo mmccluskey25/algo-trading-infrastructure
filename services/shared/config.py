@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     delete_after_compaction: bool
     compaction_interval_mins: int
 
+    # stream writer
+    landing_dir: str
+    writer_batch_interval: int
+
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", case_sensitive=False, extra="ignore"
     )

@@ -6,18 +6,7 @@ from pathlib import Path
 
 import polars as pl
 import redis
-
-# from dotenv import load_dotenv, find_dotenv
 from services.shared.config import settings
-
-# load_dotenv(find_dotenv())
-
-# REDIS_HOST = os.getenv("REDIS_HOST", "redis")
-# REDIS_PORT = os.getenv("REDIS_PORT", 6379)
-# QUEUE_KEY = "tick_queue:oanda"
-
-# OUTPUT_DIR = os.getenv("LANDING_DIR", "./data/landing/ticks")
-# BATCH_INTERVAL = os.getenv("WRITER_BATCH_INTERVAL", 60)
 
 Path(settings.landing_dir).mkdir(parents=True, exist_ok=True)
 

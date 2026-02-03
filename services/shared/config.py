@@ -3,19 +3,19 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # container variables
-    prefix: str
-    host_data_path: str
+    prefix: str | None = None
+    host_data_path: str | None = None
 
     # oanda listener
-    account_id: str
-    api_token: str
-    instruments: str
+    account_id: str | None = None
+    api_token: str | None = None
+    instruments: str | None = None
 
     # redis
-    redis_port: int
-    redis_ext_port: int
-    redis_host: str
-    host_redis_path: str
+    redis_port: int = 6379
+    redis_ext_port: int = 6379
+    redis_host: str | None = None
+    host_redis_path: str | None = None
 
     # compactor-ingestor
     delete_after_compaction: bool = True

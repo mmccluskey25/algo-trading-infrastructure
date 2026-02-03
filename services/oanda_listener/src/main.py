@@ -5,6 +5,9 @@ import aiohttp
 from redis.asyncio import Redis
 from services.shared.config import settings
 
+if not settings.account_id or not settings.api_token:
+    raise ValueError("Missing Oanda credentials (ACCOUNT_ID or API_TOKEN")
+
 URL = f"https://stream-fxtrade.oanda.com/v3/accounts/{settings.account_id}/pricing/stream?instruments={settings.instruments}"
 print(URL)
 

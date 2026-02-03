@@ -18,8 +18,8 @@ class Settings(BaseSettings):
     host_redis_path: str
 
     # compactor-ingestor
-    delete_after_compaction: bool
-    compaction_interval_mins: int
+    delete_after_compaction: bool = True
+    compaction_interval_mins: int = 720
     bronze_dir: str = "/data/bronze/ticks"
 
     # stream writer

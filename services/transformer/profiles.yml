@@ -1,0 +1,18 @@
+trading_bot:
+  target: "{{ env_var('DBT_TARGET', 'dev') }}"
+  outputs:
+    prod:
+      type: duckdb
+      path: "{{ env_var('DATA_ROOT') }}/catalog.duckdb"
+      extensions:
+        - parquet
+      settings:
+        external_root: "{{ env_var('DATA_ROOT') }}"
+
+    dev:
+      type: duckdb
+      path: "./dev_data/catalog.duckdb"
+      extensions:
+        - parquet
+      settings:
+        external_root: "./dev_data"

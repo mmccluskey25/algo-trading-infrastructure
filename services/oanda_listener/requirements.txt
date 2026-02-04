@@ -6,6 +6,8 @@ aiohttp==3.13.3
     # via oanda-listener
 aiosignal==1.4.0
     # via aiohttp
+annotated-types==0.7.0
+    # via pydantic
 attrs==25.4.0
     # via aiohttp
 frozenlist==1.8.0
@@ -22,9 +24,26 @@ propcache==0.4.1
     # via
     #   aiohttp
     #   yarl
-python-dotenv==1.2.1
+pydantic==2.12.5
+    # via pydantic-settings
+pydantic-core==2.41.5
+    # via pydantic
+pydantic-settings==2.12.0
     # via oanda-listener
+python-dotenv==1.2.1
+    # via
+    #   oanda-listener
+    #   pydantic-settings
 redis==7.1.0
     # via oanda-listener
+typing-extensions==4.15.0
+    # via
+    #   pydantic
+    #   pydantic-core
+    #   typing-inspection
+typing-inspection==0.4.2
+    # via
+    #   pydantic
+    #   pydantic-settings
 yarl==1.22.0
     # via aiohttp

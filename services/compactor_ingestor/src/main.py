@@ -1,25 +1,26 @@
-import os, time
+import time
+
+from datetime import datetime
 from core import compact_files
-from dotenv import load_dotenv, find_dotenv
+from services.shared.config import settings
 
-load_dotenv(find_dotenv())
-
-DATA_DIR = os.getenv("DATA_DIR", "./data")
-LANDING_DIR = os.getenv("LANDING_DIR", "/data/landing/ticks")
-BRONZE_DIR = os.getenv("BRONZE_DIR", "/data/bronze/ticks")
-
-DELETE_RAW = os.getenv("DELETE_RAW", "true").lower() == "true"
-INTERVAL = int(os.getenv("COMPACT_INTERVAL", 240)) # default 4 hours
 
 def main():
     print("Compactor-Ingestor scheduler started")
-    print(f"Interval: {INTERVAL} minutes.")
-    
-    while True:
-        compact_files(LANDING_DIR, BRONZE_DIR, delete_raw=DELETE_RAW)
+    print(f"Interval: {settings.compaction_interval_mins} minutes.")
 
-        print("Sleeping for {INTERVAL} minutes...")
+    while True:
+        compact_files(
+            landing_dir=settings.landing_dir,
+            bronze_dir=settings.bronze_dir,
+            date_str=datetime.now().strftime("%Y%m%d"),
+            delete_raw=settings.delete_after_compaction
+        )
+
+        print(f"Sleeping for {INTERVAL} minutes...")
         time.sleep(INTERVAL * 60)
+        print(f"Sleeping for {settings.compaction_interval_mins} minutes...")
+        time.sleep(settings.compaction_interval_mins * 60)
 
 
 if __name__ == "__main__":

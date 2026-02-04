@@ -14,3 +14,10 @@ wheels/
 
 # Other
 data/
+
+
+# dbt
+services/transformer/target/
+services/transformer/dbt_packages/
+services/transformer/logs/
+services/transformer/logs/

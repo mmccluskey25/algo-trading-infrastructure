@@ -17,7 +17,7 @@ services:
     networks:
       - trading_net
     restart: unless-stopped
-  
+
   # Microservices
   oanda_listener:
     container_name: "${PREFIX}_oanda_listener"
@@ -31,12 +31,12 @@ services:
       - trading_net
     environment:
       - PYTHONUNBUFFERED=1
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
-      - ACCOUNT_ID=${ACCOUNT_ID}
-      - API_TOKEN=${API_TOKEN}
-      - INSTRUMENTS=${INSTRUMENTS}
-      #- OANDA_ENV=${OANDA_ENV}
+      - REDIS_HOST
+      - REDIS_PORT
+      - ACCOUNT_ID
+      - API_TOKEN
+      - INSTRUMENTS
+      #- OANDA_ENV
 
   stream_writer:
     container_name: "${PREFIX}_stream_writer"
@@ -53,8 +53,8 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - LANDING_DIR=/data/landing/ticks
-      - REDIS_HOST=${REDIS_HOST}
-      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_HOST
+      - REDIS_PORT
 
   compactor_ingestor:
     container_name: "${PREFIX}_compactor_ingestor"
@@ -69,12 +69,24 @@ services:
     environment:
       - LANDING_DIR=/data/landing/ticks
       - BRONZE_DIR=/data/bronze/ticks
-      - PYTHONUNBUFFERED=1
       - DELETE_RAW=${DELETE_AFTER_COMPACTION}
       - COMPACT_INTERVAL=${COMPACTION_INTERVAL_MINS}
-    
+      - PYTHONUNBUFFERED=1
+
+  transformer:
+    container_name: "${PREFIX}_transformer"
+    build:
+      context: .
+      dockerfile: services/transformer/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ${HOST_DATA_PATH}:/data
+    networks:
+      - trading_net
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DBT_TARGET=prod
 
 networks:
   trading_net:
     driver: bridge
-      

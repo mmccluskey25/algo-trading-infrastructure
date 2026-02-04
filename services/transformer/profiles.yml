@@ -6,8 +6,7 @@ trading_bot:
       path: "/data/catalog.duckdb"
       extensions:
         - parquet
-      settings:
-        external_root: "/data"
+      external_root: "/data"
       vars:
         bronze_path: "/data/bronze"
 
@@ -16,7 +15,6 @@ trading_bot:
       path: "./dev_data/catalog.duckdb"
       extensions:
         - parquet
-      settings:
-        external_root: "./dev_data"
+      external_root: "./dev_data"
       vars:
         bronze_path: "./dev_data/bronze"

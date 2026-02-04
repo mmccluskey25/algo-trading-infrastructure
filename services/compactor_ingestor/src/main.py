@@ -17,6 +17,8 @@ def main():
             delete_raw=settings.delete_after_compaction
         )
 
+        print(f"Sleeping for {INTERVAL} minutes...")
+        time.sleep(INTERVAL * 60)
         print(f"Sleeping for {settings.compaction_interval_mins} minutes...")
         time.sleep(settings.compaction_interval_mins * 60)
 

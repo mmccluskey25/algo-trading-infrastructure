@@ -85,6 +85,7 @@ services:
       - trading_net
     environment:
       - PYTHONUNBUFFERED=1
+      - DBT_TARGET=prod
 
 networks:
   trading_net:

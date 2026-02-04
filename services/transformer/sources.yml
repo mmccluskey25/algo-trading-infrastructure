@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: trading
+    schema: main
+    tables:
+      - name: ticks
+        meta:
+          external_location: "{{ var('bronze_path') }}/ticks/*.parquet"

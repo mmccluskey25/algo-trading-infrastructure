@@ -3,6 +3,7 @@ import glob
 import polars as pl
 from datetime import datetime
 
+
 def compact_files(landing_dir: str, bronze_dir: str, date_str: str = None, delete_raw: bool = False):
     if date_str is None:
         date_str = datetime.now().strftime("%Y%m%d")

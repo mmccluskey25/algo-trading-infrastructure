@@ -3,11 +3,13 @@ trading_bot:
   outputs:
     prod:
       type: duckdb
-      path: "{{ env_var('DATA_ROOT') }}/catalog.duckdb"
+      path: "/data/catalog.duckdb"
       extensions:
         - parquet
       settings:
-        external_root: "{{ env_var('DATA_ROOT') }}"
+        external_root: "/data"
+      vars:
+        bronze_path: "/data/bronze"
 
     dev:
       type: duckdb
@@ -16,3 +18,5 @@ trading_bot:
         - parquet
       settings:
         external_root: "./dev_data"
+      vars:
+        bronze_path: "./dev_data/bronze"

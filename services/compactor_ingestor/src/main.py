@@ -1,8 +1,9 @@
 import time
-
 from datetime import datetime
-from core import compact_files
+
 from services.shared.config import settings
+
+from core import compact_files
 
 
 def main():
@@ -14,11 +15,9 @@ def main():
             landing_dir=settings.landing_dir,
             bronze_dir=settings.bronze_dir,
             date_str=datetime.now().strftime("%Y%m%d"),
-            delete_raw=settings.delete_after_compaction
+            delete_raw=settings.delete_after_compaction,
         )
 
-        print(f"Sleeping for {INTERVAL} minutes...")
-        time.sleep(INTERVAL * 60)
         print(f"Sleeping for {settings.compaction_interval_mins} minutes...")
         time.sleep(settings.compaction_interval_mins * 60)
 

@@ -5,12 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "aiohttp>=3.13.3",
-    "asyncio>=4.0.0",
-    "polars>=1.37.1",
-    "pydantic-settings>=2.12.0",
-    "python-dotenv>=1.2.1",
-    "redis>=7.1.0",
+    "stream-writer",
+    "oanda-listener",
+    "compactor-ingestor",
+    "transformer"
 ]
 
 [tool.uv.workspace]
@@ -20,3 +18,9 @@ members = [
     "services/compactor_ingestor",
     "services/transformer",
 ]
+
+[tool.uv.sources]
+stream-writer = { workspace = true}
+oanda-listener = { workspace = true}
+compactor-ingestor = { workspace = true}
+transformer = { workspace = true}

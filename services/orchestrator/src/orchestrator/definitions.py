@@ -1,9 +1,8 @@
-from dagster import AssetExecutionContext, Definitions, asset
+from dagster import Definitions
 
+from orchestrator.assets.compaction import bronze_ticks, landing_ticks
+from orchestrator.resources import DataPathsResource
 
-@asset
-def hello_dagster(context: AssetExecutionContext):
-    context.log.info("Hello from Dagster")
-
-
-defs = Definitions(assets=[hello_dagster])
+defs = Definitions(
+    assets=[landing_ticks, bronze_ticks], resources={"data_paths": DataPathsResource}
+)

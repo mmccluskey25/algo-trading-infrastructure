@@ -6,9 +6,6 @@ dependencies = [
     "dagster",
 ]
 
-[project.entry-points]
-"dagster_dg.plugin" = { orchestrator = "orchestrator.lib"}
-
 [dependency-groups]
 dev = [
     "dagster-webserver",

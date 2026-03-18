@@ -1,6 +1,7 @@
 import dagster as dg
-
 from core import compact_files
+
+from orchestrator.defs.partitions import daily_partition
 from orchestrator.defs.resources import DataPathsResource
 
 landing_ticks = dg.AssetSpec(
@@ -12,7 +13,7 @@ landing_ticks = dg.AssetSpec(
 
 @dg.asset(
     deps=[landing_ticks],
-    partitions_def=dg.DailyPartitionsDefinition(start_date="20260101", fmt="%Y%m%d"),
+    partitions_def=daily_partition,
     description="Deduplicated daily tick data in the bronze layer",
     group_name="bronze",
     kinds={"parquet"},

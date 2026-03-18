@@ -10,7 +10,7 @@ RUN uv sync --frozen --no-dev
 
 COPY services/orchestrator/src/ ./src/
 
-# Compactor source needed for PipesSubprocessClient
+# Compactor core logic imported by Dagster assets
 COPY services/compactor_ingestor/src/ ./compactor/
 RUN uv pip install polars
 

@@ -1,12 +1,8 @@
-from dagster import Definitions, PipesSubprocessClient
+from pathlib import Path
 
-from orchestrator.assets.compaction import bronze_ticks, landing_ticks
-from orchestrator.resources import DataPathsResource
+from dagster import definitions, load_from_defs_folder
 
-defs = Definitions(
-    assets=[landing_ticks, bronze_ticks],
-    resources={
-        "data_paths": DataPathsResource(),
-        "pipes_client": PipesSubprocessClient(),
-    },
-)
+
+@definitions
+def defs():
+    return load_from_defs_folder(project_root=Path(__file__).parent.parent.parent)

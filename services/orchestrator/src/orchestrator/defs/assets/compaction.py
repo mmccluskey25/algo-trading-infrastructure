@@ -1,25 +1,26 @@
 from datetime import datetime
 
-from dagster import AssetExecutionContext, AssetSpec, PipesSubprocessClient, asset
+import dagster as dg
 
-from src.orchestrator.resources import DataPathsResource
+from orchestrator.defs.resources import DataPathsResource
 
-landing_ticks = AssetSpec(
+landing_ticks = dg.AssetSpec(
     key="landing_ticks",
     description="Raw tick data written by stream_writer service",
     group_name="landing",
 )
 
 
-@asset(
+@dg.asset(
     deps=[landing_ticks],
     description="Deduplicated daily tick data in the bronze layer",
     group_name="bronze",
+    types="parquet",
 )
 def bronze_ticks(
-    context: AssetExecutionContext,
+    context: dg.AssetExecutionContext,
     data_paths: DataPathsResource,
-    pipes_client: PipesSubprocessClient,
+    pipes_client: dg.PipesSubprocessClient,
 ):
     date_str = datetime.now().strftime("%Y%m%d")
 

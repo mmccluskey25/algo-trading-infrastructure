@@ -15,7 +15,7 @@ landing_ticks = dg.AssetSpec(
     deps=[landing_ticks],
     description="Deduplicated daily tick data in the bronze layer",
     group_name="bronze",
-    kinds="parquet",
+    kinds={"parquet"},
 )
 def bronze_ticks(
     context: dg.AssetExecutionContext,

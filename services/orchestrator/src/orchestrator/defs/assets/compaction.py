@@ -1,5 +1,6 @@
 import dagster as dg
 
+from core import compact_files
 from orchestrator.defs.resources import DataPathsResource
 
 landing_ticks = dg.AssetSpec(
@@ -19,17 +20,14 @@ landing_ticks = dg.AssetSpec(
 def bronze_ticks(
     context: dg.AssetExecutionContext,
     data_paths: DataPathsResource,
-    pipes_client: dg.PipesSubprocessClient,
-):
+) -> dg.MaterializeResult:
     date_str = context.partition_key
 
-    return pipes_client.run(
-        command=[data_paths.compactor_python, data_paths.compactor_script],
-        extras={
-            "landing_dir": data_paths.landing_dir,
-            "bronze_dir": data_paths.bronze_dir,
-            "date_str": date_str,
-            "delete_after_compaction": data_paths.delete_after_compaction,
-        },
-        context=context,
-    ).get_materialize_result()
+    result = compact_files(
+        landing_dir=data_paths.landing_dir,
+        bronze_dir=data_paths.bronze_dir,
+        date_str=date_str,
+        delete_raw=data_paths.delete_after_compaction,
+    )
+
+    return dg.MaterializeResult(metadata=result)

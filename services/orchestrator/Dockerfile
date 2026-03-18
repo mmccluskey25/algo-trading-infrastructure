@@ -12,6 +12,6 @@ COPY services/orchestrator/src/ ./src/
 
 # Compactor source needed for PipesSubprocessClient
 COPY services/compactor_ingestor/src/ ./compactor/
-RUN uv pip install polars dagster-pipes
+RUN uv pip install polars
 
 ENV PYTHONPATH="/app/src:/app/compactor"

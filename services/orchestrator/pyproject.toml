@@ -17,3 +17,7 @@ build-backend = "hatchling.build"
 
 [tool.dagster]
 module_name = "orchestrator.definitions"
+
+[tool.dg.project]
+root_module = "orchestrator"
+defs_module = "orchestrator.defs"

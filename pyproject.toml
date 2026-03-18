@@ -8,7 +8,8 @@ dependencies = [
     "stream-writer",
     "oanda-listener",
     "compactor-ingestor",
-    "transformer"
+    "transformer",
+    "dagster-dg>=0.26.14",
 ]
 
 [tool.uv.workspace]

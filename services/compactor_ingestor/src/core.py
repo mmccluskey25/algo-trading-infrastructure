@@ -1,19 +1,27 @@
-import os
 import glob
-import polars as pl
+import os
 from datetime import datetime
 
+import polars as pl
 
-def compact_files(landing_dir: str, bronze_dir: str, date_str: str = None, delete_raw: bool = False):
+
+def compact_files(
+    landing_dir: str, bronze_dir: str, date_str: str = None, delete_raw: bool = False
+):
     if date_str is None:
         date_str = datetime.now().strftime("%Y%m%d")
-        
-    print(f'Looking for files in {landing_dir}...')
+
+    print(f"Looking for files in {landing_dir}...")
     files = glob.glob(f"{landing_dir}/*_{date_str}_*.parquet")
 
     if not files:
         print("No files found. Exiting.")
-        return
+        return {
+            "files_compacted": 0,
+            "row_count": 0,
+            "output_path": None,
+            "files_deleted": 0,
+        }
 
     print(f"Found {len(files)} files.")
 
@@ -41,3 +49,10 @@ def compact_files(landing_dir: str, bronze_dir: str, date_str: str = None, delet
         for f in files:
             os.remove(f)
         print(f"Deleted {len(files)} raw data files from Landing.")
+
+    return {
+        "files_compacted": len(files),
+        "row_count": len(df),
+        "output_path": output_path,
+        "files_deleted": len(files) if delete_raw else 0,
+    }

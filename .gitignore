@@ -14,10 +14,15 @@ wheels/
 
 # Other
 data/
+logs/
 
 
 # dbt
 services/transformer/target/
 services/transformer/dbt_packages/
 services/transformer/logs/
-services/transformer/logs/
+services/transformer/dev_data/
+.user.yml
+
+# Dagster
+.tmp*/

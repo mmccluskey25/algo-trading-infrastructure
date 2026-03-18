@@ -56,22 +56,61 @@ services:
       - REDIS_HOST
       - REDIS_PORT
 
-  compactor_ingestor:
-    container_name: "${PREFIX}_compactor_ingestor"
+  # compactor_ingestor:
+  #   container_name: "${PREFIX}_compactor_ingestor"
+  #   build:
+  #     context: .
+  #     dockerfile: services/compactor_ingestor/Dockerfile
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ${HOST_DATA_PATH}:/data
+  #   networks:
+  #     - trading_net
+  #   environment:
+  #     - LANDING_DIR=/data/landing/ticks
+  #     - BRONZE_DIR=/data/bronze/ticks
+  #     - DELETE_RAW=${DELETE_AFTER_COMPACTION}
+  #     - COMPACT_INTERVAL=${COMPACTION_INTERVAL_MINS}
+  #     - PYTHONUNBUFFERED=1
+
+  # Dagster orchestration
+  orchestrator-webserver:
+    container_name: "${PREFIX}_orchestrator_webserver"
     build:
       context: .
-      dockerfile: services/compactor_ingestor/Dockerfile
+      dockerfile: services/orchestrator/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3004:3000"
+    volumes:
+      - ${HOST_DATA_PATH}:/data
+    networks:
+      - trading_net
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DAGSTER_HOME=/data/dagster
+      - LANDING_DIR=/data/landing/ticks
+      - BRONZE_DIR=/data/bronze/ticks
+      - DELETE_AFTER_COMPACTION
+    command: ["dagster-webserver", "-h", "0.0.0.0", "-p", "3000"]
+
+  orchestrator-daemon:
+    container_name: "${PREFIX}_orchestrator_daemon"
+    build:
+      context: .
+      dockerfile: services/orchestrator/Dockerfile
     restart: unless-stopped
     volumes:
       - ${HOST_DATA_PATH}:/data
     networks:
       - trading_net
     environment:
+      - PYTHONUNBUFFERED=1
+      - DAGSTER_HOME=/data/dagster
       - LANDING_DIR=/data/landing/ticks
       - BRONZE_DIR=/data/bronze/ticks
-      - DELETE_RAW=${DELETE_AFTER_COMPACTION}
-      - COMPACT_INTERVAL=${COMPACTION_INTERVAL_MINS}
-      - PYTHONUNBUFFERED=1
+      - DELETE_AFTER_COMPACTION
+    command: ["dagster-daemon", "run"]
 
   transformer:
     container_name: "${PREFIX}_transformer"

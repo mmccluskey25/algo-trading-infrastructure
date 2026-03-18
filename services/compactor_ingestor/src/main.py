@@ -1,25 +1,21 @@
-import time
-from datetime import datetime
-
-from services.shared.config import settings
+from dagster_pipes import open_dagster_pipes
 
 from core import compact_files
 
 
 def main():
-    print("Compactor-Ingestor scheduler started")
-    print(f"Interval: {settings.compaction_interval_mins} minutes.")
+    with open_dagster_pipes() as context:
+        extras = context.extras
+        context.log.info(f"Starting compaction for {extras['date_str']}")
 
-    while True:
-        compact_files(
-            landing_dir=settings.landing_dir,
-            bronze_dir=settings.bronze_dir,
-            date_str=datetime.now().strftime("%Y%m%d"),
-            delete_raw=settings.delete_after_compaction,
+        result = compact_files(
+            landing_dir=extras["landing_dir"],
+            bronze_dir=extras["bronze_dir"],
+            date_str=extras["date_str"],
+            delete_raw=extras["delete_after_compaction"],
         )
 
-        print(f"Sleeping for {settings.compaction_interval_mins} minutes...")
-        time.sleep(settings.compaction_interval_mins * 60)
+        context.report_asset_materialization(metadata=result)
 
 
 if __name__ == "__main__":

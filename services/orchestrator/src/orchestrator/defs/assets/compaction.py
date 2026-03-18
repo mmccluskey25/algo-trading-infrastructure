@@ -11,7 +11,7 @@ landing_ticks = dg.AssetSpec(
 
 @dg.asset(
     deps=[landing_ticks],
-    partitions_def=dg.DailyPartitionsDefinition(start_date="20250101", fmt="%Y%m%d"),
+    partitions_def=dg.DailyPartitionsDefinition(start_date="20260101", fmt="%Y%m%d"),
     description="Deduplicated daily tick data in the bronze layer",
     group_name="bronze",
     kinds={"parquet"},
@@ -24,7 +24,7 @@ def bronze_ticks(
     date_str = context.partition_key
 
     return pipes_client.run(
-        command=["python", "services/compactor_ingestor/src/main.py"],
+        command=[data_paths.compactor_python, data_paths.compactor_script],
         extras={
             "landing_dir": data_paths.landing_dir,
             "bronze_dir": data_paths.bronze_dir,

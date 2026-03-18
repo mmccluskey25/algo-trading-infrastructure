@@ -2,9 +2,11 @@ import dagster as dg
 
 
 class DataPathsResource(dg.ConfigurableResource):
-    landing_dir: str = "/data/landing/ticks"
-    bronze_dir: str = "/data/bronze/ticks"
+    landing_dir: str = dg.EnvVar("LANDING_DIR")
+    bronze_dir: str = dg.EnvVar("BRONZE_DIR")
     delete_after_compaction: bool = True
+    compactor_script: str = dg.EnvVar("COMPACTOR_SCRIPT_PATH")
+    compactor_python: str = dg.EnvVar("COMPACTOR_PYTHON")
 
 
 @dg.definitions

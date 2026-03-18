@@ -1072,19 +1072,15 @@ source = { editable = "." }
 dependencies = [
     { name = "dagster", version = "1.12.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "dagster", version = "1.12.14", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
-]
-
-[package.dev-dependencies]
-dev = [
     { name = "dagster-webserver", version = "1.12.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "dagster-webserver", version = "1.12.14", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "dagster" }]
-
-[package.metadata.requires-dev]
-dev = [{ name = "dagster-webserver" }]
+requires-dist = [
+    { name = "dagster" },
+    { name = "dagster-webserver" },
+]
 
 [[package]]
 name = "packaging"

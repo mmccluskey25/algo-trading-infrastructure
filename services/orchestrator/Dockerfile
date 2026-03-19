@@ -8,7 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY services/orchestrator/src/ ./src/
 
-# Compactor core logic imported by Dagster assets
-COPY services/compactor_ingestor/src/ ./compactor/
-
-ENV PYTHONPATH="/app/src:/app/compactor"
+ENV PYTHONPATH="/app/src"

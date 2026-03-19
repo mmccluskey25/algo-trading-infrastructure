@@ -1,7 +1,7 @@
 import dagster as dg
-from core import compact_files
+from orchestrator.lib.compaction import compact_files
 
-from orchestrator.defs.partitions import daily_partition
+from orchestrator.defs.partitions import tick_partition
 from orchestrator.defs.resources import DataPathsResource
 
 landing_ticks = dg.AssetSpec(
@@ -13,22 +13,26 @@ landing_ticks = dg.AssetSpec(
 
 @dg.asset(
     deps=[landing_ticks],
-    partitions_def=daily_partition,
-    description="Deduplicated daily tick data in the bronze layer",
+    partitions_def=tick_partition,
+    description="Deduplicated daily tick data in the bronze layer, partitioned by instrument",
     group_name="bronze",
     kinds={"parquet"},
 )
-def bronze_ticks(
+def oanda_ticks(
     context: dg.AssetExecutionContext,
     data_paths: DataPathsResource,
 ) -> dg.MaterializeResult:
-    date_str = context.partition_key
+    partition_key = context.partition_key
+    date_str = partition_key.keys_by_dimension["date"]
+    instrument = partition_key.keys_by_dimension["instrument"]
 
     result = compact_files(
         landing_dir=data_paths.landing_dir,
         bronze_dir=data_paths.bronze_dir,
         date_str=date_str,
         delete_raw=data_paths.delete_after_compaction,
+        instrument=instrument,
+        broker="oanda",
     )
 
     return dg.MaterializeResult(metadata=result)

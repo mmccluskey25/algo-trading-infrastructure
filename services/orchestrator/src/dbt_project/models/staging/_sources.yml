@@ -4,6 +4,6 @@ sources:
   - name: trading
     schema: main
     tables:
-      - name: ticks
+      - name: oanda_ticks
         meta:
-          external_location: "{{ var('bronze_path') }}/ticks/*.parquet"
+          external_location: "{{ var('bronze_path') }}/ticks/oanda/*/*.parquet"

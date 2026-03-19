@@ -1,5 +1,4 @@
 import json
-import os
 import time
 from datetime import datetime
 from pathlib import Path
@@ -47,12 +46,16 @@ def process_batch(r):
         df = pl.DataFrame(data_dicts)
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"oanda_ticks_{timestamp}.parquet"
-        filepath = os.path.join(settings.landing_dir, filename)
 
-        df.write_parquet(filepath, compression="zstd")
+        for partition_df in df.partition_by("instrument"):
+            instrument = partition_df["instrument"][0]
+            output_dir = Path(settings.landing_dir) / "ticks" / settings.broker_name / instrument
+            output_dir.mkdir(parents=True, exist_ok=True)
 
-        print(f"Saved {filepath} ({len(df)} rows)")
+            filepath = output_dir / f"{timestamp}.parquet"
+            partition_df.write_parquet(filepath, compression="zstd")
+
+            print(f"Saved {filepath} ({len(partition_df)} rows)")
 
     except Exception as e:
         print(f"Error: {e}")

@@ -4,7 +4,10 @@ requires-python = ">=3.9,<3.13"
 version = "0.1.0"
 dependencies = [
     "dagster",
+    "dagster-dbt>=0.28.1",
     "dagster-webserver",
+    "dbt-duckdb>=1.10.0",
+    "polars>=1.36.1",
 ]
 
 [build-system]

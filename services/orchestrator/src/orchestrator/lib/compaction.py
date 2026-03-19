@@ -6,13 +6,19 @@ import polars as pl
 
 
 def compact_files(
-    landing_dir: str, bronze_dir: str, date_str: str = None, delete_raw: bool = False
+    landing_dir: str,
+    bronze_dir: str,
+    date_str: str = None,
+    delete_raw: bool = False,
+    instrument: str = None,
+    broker: str = "oanda",
 ):
     if date_str is None:
         date_str = datetime.now().strftime("%Y%m%d")
 
-    print(f"Looking for files in {landing_dir}...")
-    files = glob.glob(f"{landing_dir}/*_{date_str}_*.parquet")
+    landing_path = f"{landing_dir}/ticks/{broker}/{instrument}"
+    print(f"Looking for files in {landing_path}...")
+    files = glob.glob(f"{landing_path}/{date_str}_*.parquet")
 
     if not files:
         print("No files found. Exiting.")
@@ -21,13 +27,15 @@ def compact_files(
             "row_count": 0,
             "output_path": None,
             "files_deleted": 0,
+            "instrument": instrument,
+            "broker": broker,
         }
 
     print(f"Found {len(files)} files.")
 
     df = pl.scan_parquet(files)
 
-    output_path = f"{bronze_dir}/{date_str}.parquet"
+    output_path = f"{bronze_dir}/ticks/{broker}/{instrument}/{date_str}.parquet"
     # Check for existing bronze parquet and merge if necessary
     if os.path.exists(output_path):
         print(f"Existing bronze file found at {output_path}. Merging...")
@@ -55,4 +63,6 @@ def compact_files(
         "row_count": len(df),
         "output_path": output_path,
         "files_deleted": len(files) if delete_raw else 0,
+        "instrument": instrument,
+        "broker": broker,
     }

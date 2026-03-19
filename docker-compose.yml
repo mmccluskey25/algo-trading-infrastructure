@@ -52,9 +52,10 @@ services:
       - trading_net
     environment:
       - PYTHONUNBUFFERED=1
-      - LANDING_DIR=/data/landing/ticks
+      - LANDING_DIR=/data/landing
       - REDIS_HOST
       - REDIS_PORT
+      - BROKER_NAME=oanda
 
   # compactor_ingestor:
   #   container_name: "${PREFIX}_compactor_ingestor"
@@ -81,7 +82,7 @@ services:
       dockerfile: services/orchestrator/Dockerfile
     restart: unless-stopped
     ports:
-      - "3004:3000"
+      - "${DAGSTER_EXT_PORT}:3000"
     volumes:
       - ${HOST_DATA_PATH}:/data
     networks:
@@ -89,8 +90,11 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - DAGSTER_HOME=/data/dagster
-      - LANDING_DIR=/data/landing/ticks
-      - BRONZE_DIR=/data/bronze/ticks
+      - LANDING_DIR=/data/landing
+      - BRONZE_DIR=/data/bronze
+      - DUCKDB_PATH=/data/catalog.duckdb
+      - DATA_ROOT=/data
+      - DBT_TARGET=prod
       - DELETE_AFTER_COMPACTION
     command: ["dagster-webserver", "-h", "0.0.0.0", "-p", "3000"]
 
@@ -107,24 +111,27 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - DAGSTER_HOME=/data/dagster
-      - LANDING_DIR=/data/landing/ticks
-      - BRONZE_DIR=/data/bronze/ticks
+      - LANDING_DIR=/data/landing
+      - BRONZE_DIR=/data/bronze
+      - DUCKDB_PATH=/data/catalog.duckdb
+      - DATA_ROOT=/data
+      - DBT_TARGET=prod
       - DELETE_AFTER_COMPACTION
     command: ["dagster-daemon", "run"]
 
-  transformer:
-    container_name: "${PREFIX}_transformer"
-    build:
-      context: .
-      dockerfile: services/transformer/Dockerfile
-    restart: unless-stopped
-    volumes:
-      - ${HOST_DATA_PATH}:/data
-    networks:
-      - trading_net
-    environment:
-      - PYTHONUNBUFFERED=1
-      - DBT_TARGET=prod
+  # transformer:
+  #   container_name: "${PREFIX}_transformer"
+  #   build:
+  #     context: .
+  #     dockerfile: services/transformer/Dockerfile
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ${HOST_DATA_PATH}:/data
+  #   networks:
+  #     - trading_net
+  #   environment:
+  #     - PYTHONUNBUFFERED=1
+  #     - DBT_TARGET=prod
 
 networks:
   trading_net:

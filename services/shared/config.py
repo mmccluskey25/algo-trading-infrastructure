@@ -20,12 +20,13 @@ class Settings(BaseSettings):
     # compactor-ingestor
     delete_after_compaction: bool = True
     compaction_interval_mins: int = 720
-    bronze_dir: str = "/data/bronze/ticks"
+    bronze_dir: str = "/data/bronze"
 
     # stream writer
-    landing_dir: str = "./data/landing/ticks"
+    landing_dir: str = "./data/landing"
     writer_batch_interval: int = 60
     queue_key: str = "tick_queue:oanda"
+    broker_name: str = "oanda"
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", case_sensitive=False, extra="ignore"

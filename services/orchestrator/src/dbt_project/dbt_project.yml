@@ -3,11 +3,7 @@ version: "1.0.0"
 profile: "trading_bot"
 
 model-paths: ["models"]
-analysis-paths: ["analyses"]
 test-paths: ["tests"]
-seed-paths: ["seeds"]
-macro-paths: ["macros"]
-snapshot-paths: ["snapshots"]
 
 clean-targets:
   - "target"
@@ -15,12 +11,10 @@ clean-targets:
 
 models:
   trading_bot:
-    # Default config for Silver Layer
-    silver:
+    staging:
       +materialized: external
       +location: "silver/{name}.parquet" # Auto-saves as silver/filename.parquet
 
-    # Default config for Gold Layer
-    gold:
+    marts:
       +materialized: external
       +location: "gold/{name}.parquet"

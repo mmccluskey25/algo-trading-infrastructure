@@ -6,6 +6,7 @@ COPY services/orchestrator/requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY services/orchestrator/pyproject.toml .
 COPY services/orchestrator/src/ ./src/
 
 ENV PYTHONPATH="/app/src"

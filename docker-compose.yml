@@ -82,7 +82,7 @@ services:
       dockerfile: services/orchestrator/Dockerfile
     restart: unless-stopped
     ports:
-      - "3004:3000"
+      - "${DAGSTER_EXT_PORT}:3000"
     volumes:
       - ${HOST_DATA_PATH}:/data
     networks:

@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: trading
+  - name: forex
     schema: main
     tables:
       - name: oanda_ticks

@@ -9,6 +9,9 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
+vars:
+  bronze_path: "{{ env_var('BRONZE_DIR') }}"
+
 models:
   trading_bot:
     staging:

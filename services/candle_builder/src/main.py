@@ -1,7 +1,7 @@
 import json
 import signal
 import time
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import polars as pl
@@ -100,13 +100,34 @@ def write_current_candle(r: redis.Redis, candle: Candle) -> None:
     r.hset(hash_key, mapping=candle_to_hash(candle))
 
 
+def next_flush_boundary() -> datetime:
+    """Return the next clock-aligned flush time (UTC).
+
+    With a 15-minute interval, boundaries are :00, :15, :30, :45.
+    """
+    interval_mins = settings.candle_flush_interval // 60
+    now = datetime.now(timezone.utc)
+    current_minute = now.minute
+    next_boundary_minute = ((current_minute // interval_mins) + 1) * interval_mins
+
+    boundary = now.replace(second=0, microsecond=0)
+    if next_boundary_minute >= 60:
+        # Rolls into the next hour
+
+        boundary = boundary.replace(minute=0) + timedelta(hours=1)
+    else:
+        boundary = boundary.replace(minute=next_boundary_minute)
+
+    return boundary
+
+
 def flush_to_parquet(buffer: list[dict]) -> None:
     """Write buffered candles to a parquet file, partitioned by instrument."""
     if not buffer:
         return
 
     df = pl.DataFrame(buffer)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
 
     for partition_df in df.partition_by("instrument"):
         instrument = partition_df["instrument"][0]
@@ -122,7 +143,7 @@ def main():
     r = connect_redis()
     accumulator = CandleAccumulator()
     parquet_buffer: list[dict] = []
-    last_flush = time.monotonic()
+    flush_boundary = next_flush_boundary()
 
     # Flush buffer on shutdown
     shutting_down = False
@@ -136,6 +157,7 @@ def main():
     signal.signal(signal.SIGINT, handle_signal)
 
     print(f"Listening on {settings.candle_builder_queue_key}...")
+    print(f"Next flush at {flush_boundary.isoformat()}")
 
     while not shutting_down:
         # Timeout lets the loop unblock periodically to check flush timer
@@ -157,12 +179,13 @@ def main():
                 if current is not None:
                     write_current_candle(r, current)
 
-        # Check if it's time to flush to parquet
-        elapsed = time.monotonic() - last_flush
-        if elapsed >= settings.candle_flush_interval and parquet_buffer:
+        # Flush at clock-aligned boundaries
+        now = datetime.now(timezone.utc)
+        if now >= flush_boundary and parquet_buffer:
             flush_to_parquet(parquet_buffer)
             parquet_buffer.clear()
-            last_flush = time.monotonic()
+            flush_boundary = next_flush_boundary()
+            print(f"Next flush at {flush_boundary.isoformat()}")
 
     # Final flush on shutdown
     flush_to_parquet(parquet_buffer)

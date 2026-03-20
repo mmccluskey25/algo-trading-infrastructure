@@ -9,6 +9,10 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
+vars:
+  bronze_path: "{{ env_var('BRONZE_DIR') }}"
+  ny_close_hour: 17
+
 models:
   trading_bot:
     staging:

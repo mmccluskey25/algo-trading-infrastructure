@@ -28,6 +28,7 @@ def main():
     print(f"Listening on {settings.candle_builder_queue_key}...")
 
     while True:
+        # blpop for low latency
         result = r.blpop(settings.candle_builder_queue_key, timeout=0)
 
         if result is None:
@@ -36,6 +37,7 @@ def main():
         _key, raw = result
         tick = json.loads(raw)
 
+        # TODO: pass tick to candle accumulator (Step 4)
         print(f"Tick: {tick.get('instrument')} @ {tick.get('time')}")
 
 

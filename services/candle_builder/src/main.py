@@ -10,7 +10,7 @@ import redis
 from services.shared.config import settings
 from src.candle import Candle, CandleAccumulator
 
-SILVER_DIR = Path("/data/silver/ohlc_m1")
+BRONZE_CANDLE_DIR = Path(settings.bronze_dir) / "ohlc_m1"
 
 
 def connect_redis() -> redis.Redis:
@@ -110,7 +110,7 @@ def flush_to_parquet(buffer: list[dict]) -> None:
 
     for partition_df in df.partition_by("instrument"):
         instrument = partition_df["instrument"][0]
-        output_dir = SILVER_DIR / instrument
+        output_dir = BRONZE_CANDLE_DIR / instrument
         output_dir.mkdir(parents=True, exist_ok=True)
 
         filepath = output_dir / f"{timestamp}.parquet"

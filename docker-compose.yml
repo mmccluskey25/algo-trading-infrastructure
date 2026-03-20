@@ -76,6 +76,7 @@ services:
       - CANDLE_BUILDER_QUEUE_KEY=tick_queue:candle_builder
       - CANDLE_FLUSH_INTERVAL=900
       - CANDLE_REDIS_TTL=172800
+      - BRONZE_DIR=/data/bronze
 
   # compactor_ingestor:
   #   container_name: "${PREFIX}_compactor_ingestor"

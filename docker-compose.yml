@@ -57,6 +57,26 @@ services:
       - REDIS_PORT
       - BROKER_NAME=oanda
 
+  candle_builder:
+    container_name: "${PREFIX}_candle_builder"
+    build:
+      context: .
+      dockerfile: services/candle_builder/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ${HOST_DATA_PATH}:/data
+    depends_on:
+      - redis
+    networks:
+      - trading_net
+    environment:
+      - PYTHONUNBUFFERED=1
+      - REDIS_HOST
+      - REDIS_PORT
+      - CANDLE_BUILDER_QUEUE_KEY=tick_queue:candle_builder
+      - CANDLE_FLUSH_INTERVAL=900
+      - CANDLE_REDIS_TTL=172800
+
   # compactor_ingestor:
   #   container_name: "${PREFIX}_compactor_ingestor"
   #   build:

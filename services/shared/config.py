@@ -28,6 +28,11 @@ class Settings(BaseSettings):
     queue_key: str = "tick_queue:oanda"
     broker_name: str = "oanda"
 
+    # candle builder
+    candle_builder_queue_key: str = "tick_queue:candle_builder"
+    candle_flush_interval: int = 900
+    candle_redis_ttl: int = 172800
+
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", case_sensitive=False, extra="ignore"
     )

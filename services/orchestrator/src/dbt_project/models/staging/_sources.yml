@@ -7,3 +7,6 @@ sources:
       - name: oanda_ticks
         meta:
           external_location: "{{ var('bronze_path') }}/ticks/oanda/*/*.parquet"
+      - name: oanda_m1
+        meta:
+          external_location: "{{ var('bronze_path') }}/ohlc_m1/*/*.parquet"

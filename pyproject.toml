@@ -7,8 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "stream-writer",
     "oanda-listener",
-    "compactor-ingestor",
-    "transformer",
+    "candle-builder",
     "dagster-dg>=0.26.14",
 ]
 
@@ -18,10 +17,10 @@ members = [
     "services/oanda_listener",
     "services/compactor_ingestor",
     "services/transformer",
+    "services/candle_builder",
 ]
 
 [tool.uv.sources]
 stream-writer = { workspace = true}
 oanda-listener = { workspace = true}
-compactor-ingestor = { workspace = true}
-transformer = { workspace = true}
+candle-builder = { workspace = true}

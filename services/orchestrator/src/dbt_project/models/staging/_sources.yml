@@ -6,7 +6,7 @@ sources:
     tables:
       - name: oanda_ticks
         meta:
-          external_location: "{{ var('bronze_path') }}/ticks/oanda/*/*.parquet"
+          external_location: "{{ env_var('DATA_ROOT') }}/bronze/ticks/oanda/*/*.parquet"
       - name: oanda_m1
         meta:
-          external_location: "{{ var('bronze_path') }}/ohlc_m1/*/*.parquet"
+          external_location: "{{ env_var('DATA_ROOT') }}/bronze/ohlc_m1/*/*.parquet"

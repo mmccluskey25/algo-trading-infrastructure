@@ -1,20 +1,9 @@
 trading_bot:
-  target: "{{ env_var('DBT_TARGET', 'dev') }}"
+  target: default
   outputs:
-    prod:
+    default:
       type: duckdb
-      path: "{{ env_var('DUCKDB_PATH') }}"
+      path: "{{ env_var('DATA_ROOT') }}/catalog.duckdb"
       extensions:
         - parquet
       external_root: "{{ env_var('DATA_ROOT') }}"
-      vars:
-        bronze_path: "{{ env_var('BRONZE_DIR') }}"
-
-    dev:
-      type: duckdb
-      path: "{{ env_var('DUCKDB_PATH') }}"
-      extensions:
-        - parquet
-      external_root: "{{ env_var('DATA_ROOT') }}"
-      vars:
-        bronze_path: "{{ env_var('BRONZE_DIR') }}"

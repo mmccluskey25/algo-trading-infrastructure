@@ -10,15 +10,15 @@ clean-targets:
   - "dbt_packages"
 
 vars:
-  bronze_path: "{{ env_var('BRONZE_DIR') }}"
   ny_close_hour: 17
 
 models:
   trading_bot:
     staging:
       +materialized: external
-      +location: "silver/{name}.parquet" # Auto-saves as silver/filename.parquet
+
+    intermediate:
+      +materialized: external
 
     marts:
       +materialized: external
-      +location: "gold/{name}.parquet"

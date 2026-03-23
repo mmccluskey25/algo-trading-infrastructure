@@ -52,7 +52,7 @@ services:
       - trading_net
     environment:
       - PYTHONUNBUFFERED=1
-      - LANDING_DIR=/data/landing
+      - DATA_ROOT=/data
       - REDIS_HOST
       - REDIS_PORT
       - BROKER_NAME=oanda
@@ -76,7 +76,7 @@ services:
       - CANDLE_BUILDER_QUEUE_KEY=tick_queue:candle_builder
       - CANDLE_FLUSH_INTERVAL=900
       - CANDLE_REDIS_TTL=172800
-      - BRONZE_DIR=/data/bronze
+      - DATA_ROOT=/data
 
   # compactor_ingestor:
   #   container_name: "${PREFIX}_compactor_ingestor"
@@ -89,8 +89,7 @@ services:
   #   networks:
   #     - trading_net
   #   environment:
-  #     - LANDING_DIR=/data/landing/ticks
-  #     - BRONZE_DIR=/data/bronze/ticks
+  #     - DATA_ROOT=/data
   #     - DELETE_RAW=${DELETE_AFTER_COMPACTION}
   #     - COMPACT_INTERVAL=${COMPACTION_INTERVAL_MINS}
   #     - PYTHONUNBUFFERED=1
@@ -111,11 +110,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - DAGSTER_HOME=/data/dagster
-      - LANDING_DIR=/data/landing
-      - BRONZE_DIR=/data/bronze
-      - DUCKDB_PATH=/data/catalog.duckdb
       - DATA_ROOT=/data
-      - DBT_TARGET=prod
       - DELETE_AFTER_COMPACTION
     command: ["dagster-webserver", "-h", "0.0.0.0", "-p", "3000"]
 
@@ -132,11 +127,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - DAGSTER_HOME=/data/dagster
-      - LANDING_DIR=/data/landing
-      - BRONZE_DIR=/data/bronze
-      - DUCKDB_PATH=/data/catalog.duckdb
       - DATA_ROOT=/data
-      - DBT_TARGET=prod
       - DELETE_AFTER_COMPACTION
     command: ["dagster-daemon", "run"]
 

@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     # container variables
     prefix: str | None = None
     host_data_path: str | None = None
+    data_root: str = "/data"
 
     # oanda listener
     account_id: str | None = None
@@ -20,10 +21,8 @@ class Settings(BaseSettings):
     # compactor-ingestor
     delete_after_compaction: bool = True
     compaction_interval_mins: int = 720
-    bronze_dir: str = "/data/bronze"
 
     # stream writer
-    landing_dir: str = "./data/landing"
     writer_batch_interval: int = 60
     queue_key: str = "tick_queue:oanda"
     broker_name: str = "oanda"
@@ -32,6 +31,18 @@ class Settings(BaseSettings):
     candle_builder_queue_key: str = "tick_queue:candle_builder"
     candle_flush_interval: int = 900
     candle_redis_ttl: int = 172800
+
+    @property
+    def landing_dir(self) -> str:
+        return f"{self.data_root}/landing"
+
+    @property
+    def bronze_dir(self) -> str:
+        return f"{self.data_root}/bronze"
+
+    @property
+    def duckdb_path(self) -> str:
+        return f"{self.data_root}/catalog.duckdb"
 
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", case_sensitive=False, extra="ignore"

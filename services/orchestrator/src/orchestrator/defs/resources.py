@@ -5,9 +5,16 @@ from orchestrator.defs.dbt_assets import dbt_project
 
 
 class DataPathsResource(dg.ConfigurableResource):
-    landing_dir: str = dg.EnvVar("LANDING_DIR")
-    bronze_dir: str = dg.EnvVar("BRONZE_DIR")
+    data_root: str = dg.EnvVar("DATA_ROOT")
     delete_after_compaction: bool = True
+
+    @property
+    def landing_dir(self) -> str:
+        return f"{self.data_root}/landing"
+
+    @property
+    def bronze_dir(self) -> str:
+        return f"{self.data_root}/bronze"
 
 
 @dg.definitions

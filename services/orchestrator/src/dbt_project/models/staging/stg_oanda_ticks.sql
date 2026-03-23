@@ -1,4 +1,4 @@
-{{ config(meta={'dagster_group': 'bronze'}) }}
+{{ config(meta={'dagster_group': 'bronze'}, location=env_var('DATA_ROOT') ~ "/bronze/" ~ this.identifier ~ ".parquet") }}
 
 select
     instrument,

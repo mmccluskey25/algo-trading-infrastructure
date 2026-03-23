@@ -18,4 +18,4 @@ select
     last(ask_close order by candle_open) as ask_close
 
 from {{ ref('int_m1_ny_adjusted') }}
-group by instrument, candle_open
+group by instrument, trading_date

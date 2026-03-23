@@ -9,7 +9,7 @@ base as (
     select
         instrument,
         trading_date,
-        session_name,
+        s.session_name,
         r.session_order,
         open, high, low, close,
         session_range,
@@ -18,7 +18,7 @@ base as (
         close_vs_range
     from {{ ref('gold_session_stats') }} s
     join session_order r on s.session_name = r.session_name
-    where session_name != 'london_ny_overlap'
+    where s.session_name != 'london_ny_overlap'
 ),
 prev as (
     select
@@ -57,8 +57,8 @@ vol_regime as (
     select
         *,
         case
-            when atr_rank < 0.25 then 'low'
-            when atr_rank > 0.75 then 'high'
+            when session_atr_rank < 0.25 then 'low'
+            when session_atr_rank > 0.75 then 'high'
             else 'normal'
         end as session_vol_regime
     from vol_rank

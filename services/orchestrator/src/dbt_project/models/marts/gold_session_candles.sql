@@ -9,7 +9,7 @@ with sessions as (
 
 select
     instrument,
-    candle_open::date as trading_date,
+    candle_open::timestamp::date as trading_date,
     s.session_name,
     first(open order by candle_open) as open,
     max(high) as high,
@@ -17,6 +17,6 @@ select
     last(close order by candle_open) as close
 from {{ ref('stg_ohlc_m1') }} m1
 join sessions s on
-    m1.candle_open::time >= s.session_start and
-    m1.candle_open::time < s.session_end
-group by instrument, candle_open, s.session_name
+    candle_open::timestamp::time >= s.session_start and
+    candle_open::timestamp::time < s.session_end
+group by instrument, trading_date, s.session_name

@@ -10,3 +10,8 @@ COPY services/orchestrator/pyproject.toml .
 COPY services/orchestrator/src/ ./src/
 
 ENV PYTHONPATH="/app/src"
+
+COPY services/orchestrator/entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]

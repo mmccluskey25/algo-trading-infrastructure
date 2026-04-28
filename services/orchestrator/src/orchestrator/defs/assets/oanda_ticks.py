@@ -1,13 +1,19 @@
 import dagster as dg
-from orchestrator.lib.compaction import compact_files
 
 from orchestrator.defs.partitions import tick_partition
 from orchestrator.defs.resources import DataPathsResource
+from orchestrator.lib.compaction import compact_files
 
 landing_ticks = dg.AssetSpec(
     key="landing_ticks",
     description="Raw tick data written by stream_writer service",
     group_name="landing",
+    owners=["team:data-engineering"],
+    tags={"domain": "forex", "cadence": "streaming"},
+    metadata={
+        "source_service": "stream_writer",
+        "update_cadence": "Continuous during market hours",
+    },
 )
 
 
@@ -17,6 +23,8 @@ landing_ticks = dg.AssetSpec(
     description="Deduplicated daily tick data in the bronze layer, partitioned by instrument",
     group_name="bronze",
     kinds={"parquet"},
+    owners=["team:data-engineering"],
+    tags={"domain": "forex", "cadence": "daily"},
 )
 def oanda_ticks(
     context: dg.AssetExecutionContext,

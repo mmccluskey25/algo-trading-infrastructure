@@ -1,0 +1,167 @@
+version: 2
+
+models:
+  - name: gold_session_candles
+    description: "OHLC candles aggregated by trading session. Defines four sessions (Tokyo, London, New York, London/NY overlap) and builds a single candle for each session per trading day."
+    columns:
+      - name: instrument
+        data_type: varchar
+        description: "Currency pair identifier."
+
+      - name: trading_date
+        data_type: date
+        description: "Calendar date of the trading session."
+
+      - name: session_name
+        data_type: varchar
+        description: "Trading session name: 'tokyo', 'london', 'new_york', or 'london_ny_overlap'."
+
+      - name: open
+        data_type: double
+        description: "Mid open price (first m1 candle in the session window)."
+
+      - name: high
+        data_type: double
+        description: "Mid high price (max across all m1 candles in the session)."
+
+      - name: low
+        data_type: double
+        description: "Mid low price (min across all m1 candles in the session)."
+
+      - name: close
+        data_type: double
+        description: "Mid close price (last M1 candle in the session window)."
+
+  - name: gold_session_stats
+    description: "Per-session trading statistics built on top of session candles. Adds range metrics, true range, close position within range, and a 5-period ATR."
+    columns:
+      - name: instrument
+        data_type: varchar
+        description: "Currency pair identifier."
+
+      - name: trading_date
+        data_type: date
+        description: "Calendar date of the trading session."
+
+      - name: session_name
+        data_type: varchar
+        description: "Trading session name."
+
+      - name: open
+        data_type: double
+        description: "Session mid open price."
+
+      - name: high
+        data_type: double
+        description: "Session mid high price."
+
+      - name: low
+        data_type: double
+        description: "Session mid low price."
+
+      - name: close
+        data_type: double
+        description: "Session mid close price."
+
+      - name: session_range
+        data_type: double
+        description: "Absolute session range (high - low)."
+
+      - name: prev_close
+        data_type: double
+        description: "Previous day's close for the same session, used for true range calculation."
+
+      - name: session_range_pct
+        data_type: double
+        description: "Session range as a percentage of the open price."
+
+      - name: true_range
+        data_type: double
+        description: "True range: max of (high-low, |high-prev_close|, |low-prev_close|)."
+
+      - name: close_vs_range
+        data_type: double
+        description: "Close position within the session range (0 = closed at low, 1 = closed at high). Null if range is zero."
+
+      - name: atr_5
+        data_type: double
+        description: "5-period average true range (rolling window over the last 5 sessions of the same type)."
+
+  - name: gold_session_patterns
+    description: "Cross-session pattern analysis. Compares each session against the previous session's levels to detect breakouts, and classifies volatility regimes based on ATR percentile rank. Excludes the London/NY overlap session."
+    columns:
+      - name: instrument
+        data_type: varchar
+        description: "Currency pair identifier."
+
+      - name: trading_date
+        data_type: date
+        description: "Calendar date of the trading session."
+
+      - name: session_name
+        data_type: varchar
+        description: "Trading session name: 'tokyo', 'london', or 'new_york'."
+
+      - name: session_order
+        data_type: integer
+        description: "Intraday session sequence (1=Tokyo, 2=London, 3=New York)."
+
+      - name: open
+        data_type: double
+        description: "Session mid open price."
+
+      - name: high
+        data_type: double
+        description: "Session mid high price."
+
+      - name: low
+        data_type: double
+        description: "Session mid low price."
+
+      - name: close
+        data_type: double
+        description: "Session mid close price."
+
+      - name: session_range
+        data_type: double
+        description: "Absolute session range (high - low)."
+
+      - name: true_range
+        data_type: double
+        description: "True range for the session."
+
+      - name: atr_5
+        data_type: double
+        description: "5-period average true range."
+
+      - name: close_vs_range
+        data_type: double
+        description: "Close position within the session range (0-1 scale)."
+
+      - name: prev_session_close
+        data_type: double
+        description: "Close price of the immediately preceding session (e.g. Tokyo close for London)."
+
+      - name: prev_session_high
+        data_type: double
+        description: "High of the immediately preceding session."
+
+      - name: prev_session_low
+        data_type: double
+        description: "Low of the immediately preceding session."
+
+      - name: broke_prev_high
+        data_type: boolean
+        description: "True if this session's high exceeded the previous session's high."
+
+      - name: broke_prev_low
+        data_type: boolean
+        description: "True if this session's low went below the previous session's low."
+
+      - name: session_atr_rank
+        data_type: double
+        description: "Percentile rank of this session's ATR relative to all sessions of the same type (0-1 scale)."
+
+      - name: session_vol_regime
+        data_type: varchar
+        description: "Volatility regime classification based on ATR rank: 'low' (<25th percentile), 'normal' (25th-75th), or 'high' (>75th)."

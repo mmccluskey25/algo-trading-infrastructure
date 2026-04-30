@@ -1,15 +1,16 @@
-import dagster as dg
 import os
 from pathlib import Path
+
+import dagster as dg
+
 from orchestrator.defs.jobs import dbt_ohlc_build_job
 
 BRONZE_OHLC_DIR = Path(os.environ["DATA_ROOT"]) / "bronze" / "ohlc_m1"
 
-@dg.sensor(job=dbt_ohlc_build_job, minimum_interval_seconds=60)
+
+@dg.sensor(job=dbt_ohlc_build_job, minimum_interval_seconds=300)
 def bronze_ohlc_sensor(context: dg.SensorEvaluationContext):
-    all_files = sorted(
-        str(f.name) for f in BRONZE_OHLC_DIR.rglob("*.parquet")
-    )
+    all_files = sorted(str(f.name) for f in BRONZE_OHLC_DIR.rglob("*.parquet"))
 
     if not all_files:
         yield dg.SkipReason("No parquet files found in bronze OHLC directory")

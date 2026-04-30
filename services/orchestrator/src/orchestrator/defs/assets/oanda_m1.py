@@ -9,5 +9,6 @@ oanda_m1 = dg.AssetSpec(
     metadata={
         "source_service": "candle_builder",
         "update_cadence": "Every 60s during market hours",
+        "storage_path": "{DATA_ROOT}/bronze/ohlc_m1",
     },
 )

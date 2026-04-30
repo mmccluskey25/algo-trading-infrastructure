@@ -13,6 +13,7 @@ landing_ticks = dg.AssetSpec(
     metadata={
         "source_service": "stream_writer",
         "update_cadence": "Continuous during market hours",
+        "storage_path": "{DATA_ROOT}/landing/ticks/oanda/{instrument}",
     },
 )
 
@@ -20,11 +21,12 @@ landing_ticks = dg.AssetSpec(
 @dg.asset(
     deps=[landing_ticks],
     partitions_def=tick_partition,
-    description="Deduplicated daily tick data in the bronze layer, partitioned by instrument",
+    description="Deduplicated tick data compacted to daily files in the bronze layer, partitioned by instrument",
     group_name="bronze",
     kinds={"parquet"},
     owners=["team:data-engineering"],
     tags={"domain": "forex", "cadence": "daily"},
+    metadata={"storage_path": "{DATA_ROOT}/bronze/ticks/oanda/{instrument}"},
 )
 def oanda_ticks(
     context: dg.AssetExecutionContext,

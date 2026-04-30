@@ -56,7 +56,11 @@ async def oanda_ingest():
                         try:
                             data = json.loads(line_str)
                             if data.get("type") == "PRICE":
-                                await r.rpush("tick_queue:oanda", json.dumps(data))
+                                tick_json = json.dumps(data)
+                                async with r.pipeline(transaction=False) as pipe:
+                                    pipe.rpush(settings.queue_key, tick_json)
+                                    pipe.rpush(settings.candle_builder_queue_key, tick_json)
+                                    await pipe.execute()
 
                         except json.JSONDecodeError:
                             pass

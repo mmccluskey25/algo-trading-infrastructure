@@ -1,0 +1,24 @@
+name: "trading_bot"
+version: "1.0.0"
+profile: "trading_bot"
+
+model-paths: ["models"]
+test-paths: ["tests"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  ny_close_hour: 17
+
+models:
+  trading_bot:
+    staging:
+      +materialized: external
+
+    intermediate:
+      +materialized: external
+
+    marts:
+      +materialized: external

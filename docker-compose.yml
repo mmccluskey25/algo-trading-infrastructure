@@ -52,26 +52,31 @@ services:
       - trading_net
     environment:
       - PYTHONUNBUFFERED=1
-      - LANDING_DIR=/data/landing/ticks
+      - DATA_ROOT=/data
       - REDIS_HOST
       - REDIS_PORT
+      - BROKER_NAME=oanda
 
-  # compactor_ingestor:
-  #   container_name: "${PREFIX}_compactor_ingestor"
-  #   build:
-  #     context: .
-  #     dockerfile: services/compactor_ingestor/Dockerfile
-  #   restart: unless-stopped
-  #   volumes:
-  #     - ${HOST_DATA_PATH}:/data
-  #   networks:
-  #     - trading_net
-  #   environment:
-  #     - LANDING_DIR=/data/landing/ticks
-  #     - BRONZE_DIR=/data/bronze/ticks
-  #     - DELETE_RAW=${DELETE_AFTER_COMPACTION}
-  #     - COMPACT_INTERVAL=${COMPACTION_INTERVAL_MINS}
-  #     - PYTHONUNBUFFERED=1
+  candle_builder:
+    container_name: "${PREFIX}_candle_builder"
+    build:
+      context: .
+      dockerfile: services/candle_builder/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ${HOST_DATA_PATH}:/data
+    depends_on:
+      - redis
+    networks:
+      - trading_net
+    environment:
+      - PYTHONUNBUFFERED=1
+      - REDIS_HOST
+      - REDIS_PORT
+      - CANDLE_BUILDER_QUEUE_KEY=tick_queue:candle_builder
+      - CANDLE_FLUSH_INTERVAL=900
+      - CANDLE_REDIS_TTL=172800
+      - DATA_ROOT=/data
 
   # Dagster orchestration
   orchestrator-webserver:
@@ -81,7 +86,7 @@ services:
       dockerfile: services/orchestrator/Dockerfile
     restart: unless-stopped
     ports:
-      - "3004:3000"
+      - "${DAGSTER_EXT_PORT}:3000"
     volumes:
       - ${HOST_DATA_PATH}:/data
     networks:
@@ -89,8 +94,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - DAGSTER_HOME=/data/dagster
-      - LANDING_DIR=/data/landing/ticks
-      - BRONZE_DIR=/data/bronze/ticks
+      - DATA_ROOT=/data
       - DELETE_AFTER_COMPACTION
     command: ["dagster-webserver", "-h", "0.0.0.0", "-p", "3000"]
 
@@ -107,24 +111,9 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - DAGSTER_HOME=/data/dagster
-      - LANDING_DIR=/data/landing/ticks
-      - BRONZE_DIR=/data/bronze/ticks
+      - DATA_ROOT=/data
       - DELETE_AFTER_COMPACTION
     command: ["dagster-daemon", "run"]
-
-  transformer:
-    container_name: "${PREFIX}_transformer"
-    build:
-      context: .
-      dockerfile: services/transformer/Dockerfile
-    restart: unless-stopped
-    volumes:
-      - ${HOST_DATA_PATH}:/data
-    networks:
-      - trading_net
-    environment:
-      - PYTHONUNBUFFERED=1
-      - DBT_TARGET=prod
 
 networks:
   trading_net:

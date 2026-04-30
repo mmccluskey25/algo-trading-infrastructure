@@ -1,0 +1,66 @@
+version: 2
+
+sources:
+  - name: forex
+    description: "Raw forex market data from broker APIs, landed in the bronze layer as Parquet files."
+    schema: main
+    tables:
+      - name: oanda_ticks
+        description: "Raw tick-level price updates streamed from the Oanda v20 API. Each row is a single price tick containing depth-of-book bid/ask levels."
+        meta:
+          external_location: "{{ env_var('DATA_ROOT') }}/bronze/ticks/oanda/*/*.parquet"
+        columns:
+          - name: type
+            description: "Tick type from Oanda (always 'PRICE' for price ticks)."
+          - name: time
+            description: "ISO 8601 timestamp string from Oanda indicating when the tick was generated."
+          - name: bids
+            description: "Depth-of-book bid levels. List of structs, each containing a 'price' (string) and 'liquidity' (integer)."
+          - name: asks
+            description: "Depth-of-book ask levels. List of structs, each containing a 'price' (string) and 'liquidity' (integer)."
+          - name: closeoutBid
+            description: "Closeout bid price as a string. Used by Oanda for margin closeout calculations."
+          - name: closeoutAsk
+            description: "Closeout ask price as a string. Used by Oanda for margin closeout calculations."
+          - name: status
+            description: "Market status for the instrument (e.g. 'tradeable', 'non-tradeable')."
+          - name: tradeable
+            description: "Boolean flag indicating whether the instrument is currently tradeable."
+          - name: instrument
+            description: "Currency pair identifier (e.g. 'EUR_USD')."
+
+      - name: oanda_m1
+        description: "1-minute OHLC candles constructed by the candle_builder service from raw tick data. Each row is a single completed M1 candle with bid, ask, and mid prices."
+        meta:
+          external_location: "{{ env_var('DATA_ROOT') }}/bronze/ohlc_m1/*/*.parquet"
+        columns:
+          - name: instrument
+            description: "Currency pair identifier (e.g. 'EUR_USD')."
+          - name: bucket
+            description: "Candle open timestamp (start of the 1-minute window), in UTC."
+          - name: bid_open
+            description: "Bid open price for the candle."
+          - name: bid_high
+            description: "Highest bid price during the candle."
+          - name: bid_low
+            description: "Lowest bid price during the candle."
+          - name: bid_close
+            description: "Bid close price for the candle."
+          - name: ask_open
+            description: "Ask open price for the candle."
+          - name: ask_high
+            description: "Highest ask price during the candle."
+          - name: ask_low
+            description: "Lowest ask price during the candle."
+          - name: ask_close
+            description: "Ask close price for the candle."
+          - name: mid_open
+            description: "Mid open price (average of bid and ask open)."
+          - name: mid_high
+            description: "Mid high price (average of bid and ask high)."
+          - name: mid_low
+            description: "Mid low price (average of bid and ask low)."
+          - name: mid_close
+            description: "Mid close price (average of bid and ask close)."
+          - name: tick_count
+            description: "Number of ticks received during the 1-minute window."

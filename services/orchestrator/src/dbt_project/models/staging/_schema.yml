@@ -3,385 +3,605 @@ version: 2
 models:
   - name: stg_oanda_ticks
     description: "Staged tick data from Oanda. Extracts top-of-book bid/ask from nested arrays, calculates mid price, and filters to tradeable ticks only."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - instrument
+            - tick_time
     columns:
       - name: instrument
         data_type: varchar
         description: "Currency pair identifier (e.g. EUR_USD)."
+        tests:
+          - not_null
 
       - name: tick_time
         data_type: timestamp with time zone
         description: "Timestamp of the tick, cast to timestamptz."
+        tests:
+          - not_null
 
       - name: bid
         data_type: double
         description: "Best bid price (top of book)."
+        tests:
+          - not_null
 
       - name: ask
         data_type: double
         description: "Best ask price (top of book)."
+        tests:
+          - not_null
 
       - name: mid
         data_type: double
         description: "Mid price, calculated as average of bid and ask."
+        tests:
+          - not_null
 
       - name: status
         data_type: varchar
         description: "Tick status from Oanda. Always 'tradeable' after filtering."
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - "tradeable"
 
   - name: stg_ohlc_m1
     description: "Staged 1-minute OHLC candles from Oanda. Renames source columns to standard mid/bid/ask naming convention."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - instrument
+            - candle_open
     columns:
       - name: instrument
         data_type: varchar
         description: "Currency pair identifier."
+        tests:
+          - not_null
 
       - name: candle_open
         data_type: timestamp with time zone
         description: "Candle open timestamp (start of the 1-minute window)."
+        tests:
+          - not_null
 
       - name: open
         data_type: double
         description: "Mid open price."
+        tests:
+          - not_null
 
       - name: high
         data_type: double
         description: "Mid high price."
+        tests:
+          - not_null
 
       - name: low
         data_type: double
         description: "Mid low price."
+        tests:
+          - not_null
 
       - name: close
         data_type: double
         description: "Mid close price."
+        tests:
+          - not_null
 
       - name: bid_open
         data_type: double
         description: "Bid open price."
+        tests:
+          - not_null
 
       - name: bid_high
         data_type: double
         description: "Bid high price."
+        tests:
+          - not_null
 
       - name: bid_low
         data_type: double
         description: "Bid low price."
+        tests:
+          - not_null
 
       - name: bid_close
         data_type: double
         description: "Bid close price."
+        tests:
+          - not_null
 
       - name: ask_open
         data_type: double
         description: "Ask open price."
+        tests:
+          - not_null
 
       - name: ask_high
         data_type: double
         description: "Ask high price."
+        tests:
+          - not_null
 
       - name: ask_low
         data_type: double
         description: "Ask low price."
+        tests:
+          - not_null
 
       - name: ask_close
         data_type: double
         description: "Ask close price."
+        tests:
+          - not_null
 
       - name: tick_count
         data_type: bigint
         description: "Number of ticks within the 1-minute candle."
+        tests:
+          - not_null
 
   - name: stg_ohlc_m5
     description: "5-minute OHLC candles, aggregated from 1-minute candles using time_bucket."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - instrument
+            - candle_open
     columns:
       - name: instrument
         data_type: varchar
         description: "Currency pair identifier."
+        tests:
+          - not_null
 
       - name: candle_open
         data_type: timestamp with time zone
         description: "Candle open timestamp (start of the 5-minute window)."
+        tests:
+          - not_null
 
       - name: open
         data_type: double
         description: "Mid open price (first m1 open in the window)."
+        tests:
+          - not_null
 
       - name: high
         data_type: double
         description: "Mid high price (max m1 high in the window)."
+        tests:
+          - not_null
 
       - name: low
         data_type: double
         description: "Mid low price (min m1 low in the window)."
+        tests:
+          - not_null
 
       - name: close
         data_type: double
         description: "Mid close price (last m1 close in the window)."
+        tests:
+          - not_null
 
       - name: bid_open
         data_type: double
         description: "Bid open price."
+        tests:
+          - not_null
 
       - name: bid_high
         data_type: double
         description: "Bid high price."
+        tests:
+          - not_null
 
       - name: bid_low
         data_type: double
         description: "Bid low price."
+        tests:
+          - not_null
 
       - name: bid_close
         data_type: double
         description: "Bid close price."
+        tests:
+          - not_null
 
       - name: ask_open
         data_type: double
         description: "Ask open price."
+        tests:
+          - not_null
 
       - name: ask_high
         data_type: double
         description: "Ask high price."
+        tests:
+          - not_null
 
       - name: ask_low
         data_type: double
         description: "Ask low price."
+        tests:
+          - not_null
 
       - name: ask_close
         data_type: double
         description: "Ask close price."
+        tests:
+          - not_null
 
   - name: stg_ohlc_m15
     description: "15-minute OHLC candles, aggregated from 1-minute candles using time_bucket."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - instrument
+            - candle_open
     columns:
       - name: instrument
         data_type: varchar
         description: "Currency pair identifier."
+        tests:
+          - not_null
 
       - name: candle_open
         data_type: timestamp with time zone
         description: "Candle open timestamp (start of the 15-minute window)."
+        tests:
+          - not_null
 
       - name: open
         data_type: double
         description: "Mid open price (first m1 open in the window)."
+        tests:
+          - not_null
 
       - name: high
         data_type: double
         description: "Mid high price (max m1 high in the window)."
+        tests:
+          - not_null
 
       - name: low
         data_type: double
         description: "Mid low price (min m1 low in the window)."
+        tests:
+          - not_null
 
       - name: close
         data_type: double
         description: "Mid close price (last m1 close in the window)."
+        tests:
+          - not_null
 
       - name: bid_open
         data_type: double
         description: "Bid open price."
+        tests:
+          - not_null
 
       - name: bid_high
         data_type: double
         description: "Bid high price."
+        tests:
+          - not_null
 
       - name: bid_low
         data_type: double
         description: "Bid low price."
+        tests:
+          - not_null
 
       - name: bid_close
         data_type: double
         description: "Bid close price."
+        tests:
+          - not_null
 
       - name: ask_open
         data_type: double
         description: "Ask open price."
+        tests:
+          - not_null
 
       - name: ask_high
         data_type: double
         description: "Ask high price."
+        tests:
+          - not_null
 
       - name: ask_low
         data_type: double
         description: "Ask low price."
+        tests:
+          - not_null
 
       - name: ask_close
         data_type: double
         description: "Ask close price."
+        tests:
+          - not_null
 
   - name: stg_ohlc_h1
     description: "1-hour OHLC candles, aggregated from 1-minute candles using time_bucket."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - instrument
+            - candle_open
     columns:
       - name: instrument
         data_type: varchar
         description: "Currency pair identifier."
+        tests:
+          - not_null
 
       - name: candle_open
         data_type: timestamp with time zone
         description: "Candle open timestamp (start of the 1-hour window)."
+        tests:
+          - not_null
 
       - name: open
         data_type: double
         description: "Mid open price (first m1 open in the window)."
+        tests:
+          - not_null
 
       - name: high
         data_type: double
         description: "Mid high price (max m1 high in the window)."
+        tests:
+          - not_null
 
       - name: low
         data_type: double
         description: "Mid low price (min m1 low in the window)."
+        tests:
+          - not_null
 
       - name: close
         data_type: double
         description: "Mid close price (last m1 close in the window)."
+        tests:
+          - not_null
 
       - name: bid_open
         data_type: double
         description: "Bid open price."
+        tests:
+          - not_null
 
       - name: bid_high
         data_type: double
         description: "Bid high price."
+        tests:
+          - not_null
 
       - name: bid_low
         data_type: double
         description: "Bid low price."
+        tests:
+          - not_null
 
       - name: bid_close
         data_type: double
         description: "Bid close price."
+        tests:
+          - not_null
 
       - name: ask_open
         data_type: double
         description: "Ask open price."
+        tests:
+          - not_null
 
       - name: ask_high
         data_type: double
         description: "Ask high price."
+        tests:
+          - not_null
 
       - name: ask_low
         data_type: double
         description: "Ask low price."
+        tests:
+          - not_null
 
       - name: ask_close
         data_type: double
         description: "Ask close price."
+        tests:
+          - not_null
 
   - name: stg_ohlc_h4
     description: "4-hour OHLC candles, aggregated from NY-adjusted 1-minute candles. Buckets are aligned to the NY close (5pm ET) to ensure candles don't split across trading days."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - instrument
+            - candle_open
     columns:
       - name: instrument
         data_type: varchar
         description: "Currency pair identifier."
+        tests:
+          - not_null
 
       - name: candle_open
         data_type: timestamp with time zone
         description: "Candle open timestamp (start of the 4-hour window), aligned to NY close."
+        tests:
+          - not_null
 
       - name: open
         data_type: double
         description: "Mid open price (first m1 open in the window)."
+        tests:
+          - not_null
 
       - name: high
         data_type: double
         description: "Mid high price (max m1 high in the window)."
+        tests:
+          - not_null
 
       - name: low
         data_type: double
         description: "Mid low price (min m1 low in the window)."
+        tests:
+          - not_null
 
       - name: close
         data_type: double
         description: "Mid close price (last m1 close in the window)."
+        tests:
+          - not_null
 
       - name: bid_open
         data_type: double
         description: "Bid open price."
+        tests:
+          - not_null
 
       - name: bid_high
         data_type: double
         description: "Bid high price."
+        tests:
+          - not_null
 
       - name: bid_low
         data_type: double
         description: "Bid low price."
+        tests:
+          - not_null
 
       - name: bid_close
         data_type: double
         description: "Bid close price."
+        tests:
+          - not_null
 
       - name: ask_open
         data_type: double
         description: "Ask open price."
+        tests:
+          - not_null
 
       - name: ask_high
         data_type: double
         description: "Ask high price."
+        tests:
+          - not_null
 
       - name: ask_low
         data_type: double
         description: "Ask low price."
+        tests:
+          - not_null
 
       - name: ask_close
         data_type: double
         description: "Ask close price."
+        tests:
+          - not_null
 
   - name: stg_ohlc_d1
     description: "Daily OHLC candles, aggregated from NY-adjusted 1-minute candles. Trading days are aligned to the NY close (5pm ET), matching forex market convention."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - instrument
+            - candle_open
     columns:
       - name: instrument
         data_type: varchar
         description: "Currency pair identifier."
+        tests:
+          - not_null
 
       - name: candle_open
         data_type: timestamp
         description: "Candle open timestamp, representing the NY close that starts the trading day."
+        tests:
+          - not_null
 
       - name: open
         data_type: double
         description: "Mid open price (first m1 open of the trading day)."
+        tests:
+          - not_null
 
       - name: high
         data_type: double
         description: "Mid high price (max m1 high of the trading day)."
+        tests:
+          - not_null
 
       - name: low
         data_type: double
         description: "Mid low price (min m1 low of the trading day)."
+        tests:
+          - not_null
 
       - name: close
         data_type: double
         description: "Mid close price (last m1 close of the trading day)."
+        tests:
+          - not_null
 
       - name: bid_open
         data_type: double
         description: "Bid open price."
+        tests:
+          - not_null
 
       - name: bid_high
         data_type: double
         description: "Bid high price."
+        tests:
+          - not_null
 
       - name: bid_low
         data_type: double
         description: "Bid low price."
+        tests:
+          - not_null
 
       - name: bid_close
         data_type: double
         description: "Bid close price."
+        tests:
+          - not_null
 
       - name: ask_open
         data_type: double
         description: "Ask open price."
+        tests:
+          - not_null
 
       - name: ask_high
         data_type: double
         description: "Ask high price."
+        tests:
+          - not_null
 
       - name: ask_low
         data_type: double
         description: "Ask low price."
+        tests:
+          - not_null
 
       - name: ask_close
         data_type: double
         description: "Ask close price."
+        tests:
+          - not_null

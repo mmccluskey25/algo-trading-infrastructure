@@ -1,0 +1,25 @@
+name: Docker Build
+
+on:
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  build:
+    name: Build all service images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build images via docker compose
+        env:
+          PREFIX: ci
+          REDIS_EXT_PORT: "6379"
+          HOST_REDIS_PATH: /tmp/redis
+          HOST_DATA_PATH: /tmp/data
+          DAGSTER_EXT_PORT: "3000"
+          ACCOUNT_ID: dummy
+          API_TOKEN: dummy
+        run: docker compose build

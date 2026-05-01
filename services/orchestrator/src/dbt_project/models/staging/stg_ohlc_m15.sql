@@ -15,4 +15,4 @@ select
     last(ask_close order by candle_open) as ask_close
 
 from {{ ref('stg_ohlc_m1') }}
-group by instrument, candle_open
+group by instrument, time_bucket(interval '15 minutes', candle_open)

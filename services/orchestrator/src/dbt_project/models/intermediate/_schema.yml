@@ -3,129 +3,205 @@ version: 2
 models:
   - name: int_ticks_unioned
     description: "Unions tick data from all sources into a single stream, tagged with a source identifier."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - instrument
+            - tick_time
+            - source
     columns:
       - name: instrument
         data_type: varchar
         description: "Currency pair identifier."
+        tests:
+          - not_null
 
       - name: tick_time
         data_type: timestamp with time zone
         description: "Timestamp of the tick."
+        tests:
+          - not_null
 
       - name: bid
         data_type: double
         description: "Best bid price."
+        tests:
+          - not_null
 
       - name: ask
         data_type: double
         description: "Best ask price."
+        tests:
+          - not_null
 
       - name: mid
         data_type: double
         description: "Mid price."
+        tests:
+          - not_null
 
       - name: status
         data_type: varchar
         description: "Tick status from the source broker."
+        tests:
+          - not_null
 
       - name: source
         data_type: varchar
         description: "Data source identifier (e.g. 'oanda')."
+        tests:
+          - not_null
 
   - name: int_ticks_ny_adjusted
     description: "Tick data with NY-close-aligned time fields. Shifts timestamps by the NY close hour (5pm ET) to derive the correct forex trading date."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - instrument
+            - tick_time
     columns:
       - name: instrument
         data_type: varchar
         description: "Currency pair identifier."
+        tests:
+          - not_null
 
       - name: mid
         data_type: double
         description: "Mid price."
+        tests:
+          - not_null
 
       - name: bid
         data_type: double
         description: "Best bid price."
+        tests:
+          - not_null
 
       - name: ask
         data_type: double
         description: "Best ask price."
+        tests:
+          - not_null
 
       - name: tick_time
         data_type: timestamp with time zone
         description: "Original tick timestamp."
+        tests:
+          - not_null
 
       - name: shifted_ny
         data_type: timestamp
         description: "Tick time shifted by NY close offset. Used for time bucketing aligned to forex trading days."
+        tests:
+          - not_null
 
       - name: trading_date
         data_type: date
         description: "Forex trading date derived from the shifted NY time. Each day runs 5pm-to-5pm ET."
+        tests:
+          - not_null
 
   - name: int_m1_ny_adjusted
     description: "1-minute candle data with NY-close-aligned time fields. Same shifting logic as int_ticks_ny_adjusted, applied to m1 candles for use by higher timeframe aggregations (H4, D1)."
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - instrument
+            - candle_open
     columns:
       - name: instrument
         data_type: varchar
         description: "Currency pair identifier."
+        tests:
+          - not_null
 
       - name: candle_open
         data_type: timestamp with time zone
         description: "Original candle open timestamp."
+        tests:
+          - not_null
 
       - name: open
         data_type: double
         description: "Mid open price."
+        tests:
+          - not_null
 
       - name: high
         data_type: double
         description: "Mid high price."
+        tests:
+          - not_null
 
       - name: low
         data_type: double
         description: "Mid low price."
+        tests:
+          - not_null
 
       - name: close
         data_type: double
         description: "Mid close price."
+        tests:
+          - not_null
 
       - name: bid_open
         data_type: double
         description: "Bid open price."
+        tests:
+          - not_null
 
       - name: bid_high
         data_type: double
         description: "Bid high price."
+        tests:
+          - not_null
 
       - name: bid_low
         data_type: double
         description: "Bid low price."
+        tests:
+          - not_null
 
       - name: bid_close
         data_type: double
         description: "Bid close price."
+        tests:
+          - not_null
 
       - name: ask_open
         data_type: double
         description: "Ask open price."
+        tests:
+          - not_null
 
       - name: ask_high
         data_type: double
         description: "Ask high price."
+        tests:
+          - not_null
 
       - name: ask_low
         data_type: double
         description: "Ask low price."
+        tests:
+          - not_null
 
       - name: ask_close
         data_type: double
         description: "Ask close price."
+        tests:
+          - not_null
 
       - name: shifted_ny
         data_type: timestamp
         description: "Candle open time shifted by NY close offset. Used for H4/D1 time bucketing."
+        tests:
+          - not_null
 
       - name: trading_date
         data_type: date
         description: "Forex trading date derived from the shifted NY time."
+        tests:
+          - not_null
